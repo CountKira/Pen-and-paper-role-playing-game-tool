@@ -1,12 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Sockets;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pen_and_paper_role_playing_tool
 {
-	public class Server
+	public class Server : IClientServer
 	{
+		private TcpListener listener;
+		private TcpClient clientSocket;
+
+		public Task EstablishConnection(int port)
+		{
+			listener = new TcpListener(IPAddress.Any, port);
+			listener.Start();
+			return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
+		}
+
+		public void SendMessage(string input)
+		{
+			MessageHandler.SendMessage(clientSocket, input);
+		}
+
+		public Task<string> ReceiveMessage(CancellationToken token)
+		{
+			if (token.IsCancellationRequested || !clientSocket.Client.Connected)
+			{
+				return null;
+			}
+			return MessageHandler.ReceiveMessagesAsync(clientSocket, token);
+		}
+
+		public void StopServer()
+		{
+			listener.Stop();
+		}
 	}
 }

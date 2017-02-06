@@ -3,12 +3,13 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace ConsoleApplication
+namespace Pen_and_paper_role_playing_tool
 {
-	public class Client
+	public class Client : IClientServer
 	{
-		private TcpClient clientSocket = new TcpClient();
+		private TcpClient client = new TcpClient();
 		private int port;
 		private string address;
 
@@ -22,7 +23,7 @@ namespace ConsoleApplication
 		{
 			try
 			{
-				clientSocket.Connect(address, port);
+				client.Connect(address, port);
 			}
 			catch (Exception)
 			{
@@ -31,25 +32,22 @@ namespace ConsoleApplication
 			return true;
 		}
 
-		public void SendMessageToServer(string input)
+		public void SendMessage(string input)
 		{
-			MessageHandler.SendMessages(clientSocket, input);
+			MessageHandler.SendMessage(client, input);
 		}
 
-		public void ReceiveMessage(CancellationToken token)
+		public Task<string> ReceiveMessage(CancellationToken token)
 		{
 			try
 			{
-				while (!token.IsCancellationRequested)
-				{
-					var message = MessageHandler.ReceiveMessagesAsync(clientSocket, token).Result;
-					WriteMessageToConsole($"Server: {message}");
-				}
+				return MessageHandler.ReceiveMessagesAsync(client, token);
 			}
 			catch (Exception ex)
 			{
+				//TODO: Remove Console.WriteLine
 				Console.WriteLine(ex.ToString());
-				return;
+				return null;
 			}
 		}
 
@@ -57,7 +55,7 @@ namespace ConsoleApplication
 
 		public void DisconnectFromServer()
 		{
-			clientSocket.Close();
+			client.Close();
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
+using Pen_and_paper_role_playing_tool;
 
 namespace ConsoleApplication
 {
@@ -54,7 +55,7 @@ namespace ConsoleApplication
 					var message = Console.ReadLine();
 					if (message.ToLower() == "exit")
 						break;
-					client.SendMessageToServer(message);
+					client.SendMessage(message);
 				}
 				cancelTokenSource.Cancel();
 				receive.Wait();
@@ -73,8 +74,7 @@ namespace ConsoleApplication
 			var mappings = upnpnat.StaticPortMappingCollection;
 			SetupUPnPMapping(mappings);
 			var server = new Server();
-			server.MessageWriter += message => Console.WriteLine($"{message}");
-			server.RunServer(portNumber);
+			server.EstablishConnection(portNumber);
 			Console.WriteLine("Server closed.");
 			try
 			{

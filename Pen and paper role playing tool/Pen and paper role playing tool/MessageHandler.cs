@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 
-namespace ConsoleApplication
+namespace Pen_and_paper_role_playing_tool
 {
 	internal class MessageHandler
 	{
@@ -24,13 +24,13 @@ namespace ConsoleApplication
 				message = message.Substring(0, length);
 				return message;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
-				return string.Empty;
+				return "";
 			}
 		}
 
-		public static void SendMessages(TcpClient client, string message)
+		public static void SendMessage(TcpClient client, string message)
 		{
 			var networkStream = client.GetStream();
 			var sendBytes = Encoding.ASCII.GetBytes(message);
