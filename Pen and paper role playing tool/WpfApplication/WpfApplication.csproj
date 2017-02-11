@@ -54,9 +54,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BindingTest.cs" />
     <Compile Include="ClientSetup.xaml.cs">
       <DependentUpon>ClientSetup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="ServerSetup.xaml.cs">
       <DependentUpon>ServerSetup.xaml</DependentUpon>
     </Compile>

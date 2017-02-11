@@ -10,7 +10,6 @@ namespace Pen_and_paper_role_playing_tool
 	{
 		private TcpListener listener;
 		private TcpClient clientSocket;
-
 		public Task EstablishConnection(int port)
 		{
 			listener = new TcpListener(IPAddress.Any, port);
@@ -26,10 +25,9 @@ namespace Pen_and_paper_role_playing_tool
 		public Task<string> ReceiveMessage(CancellationToken token)
 		{
 			if (token.IsCancellationRequested || !clientSocket.Client.Connected)
-			{
 				return null;
-			}
-			return MessageHandler.ReceiveMessagesAsync(clientSocket, token);
+			var receiver = MessageHandler.ReceiveMessagesAsync(clientSocket, token);
+			return receiver;
 		}
 
 		public void StopServer()

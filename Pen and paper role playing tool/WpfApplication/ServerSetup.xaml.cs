@@ -22,6 +22,7 @@ namespace WpfApplication
 	/// </summary>
 	public partial class ServerSetup : Window
 	{
+		public Server Server { get; set; }
 		public ServerSetup()
 		{
 			InitializeComponent();
@@ -32,6 +33,7 @@ namespace WpfApplication
 				stringBuilder.Append(address.ToString()).Append(Environment.NewLine);
 			}
 			ipAddresses.Text = stringBuilder.ToString();
+			SetIsWorkingVisibility(Visibility.Hidden);
 		}
 
 		private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -42,18 +44,22 @@ namespace WpfApplication
 		private void Connect_Click(object sender, RoutedEventArgs e)
 		{
 			//TODO: Add an entry into the UPnP when selecting over internet.
-			server = new Server();
-			SomethingAsync(server);
-			connectionProgress.IsIndeterminate = true;
+			Server = new Server();
+			ConnectToServer(Server);
+			SetIsWorkingVisibility(Visibility.Visible);
 		}
 
-		private async void SomethingAsync(Server server)
+		private async void ConnectToServer(Server server)
 		{
 			await server.EstablishConnection(8888);
-			connectionProgress.IsIndeterminate = false;
+			SetIsWorkingVisibility(Visibility.Hidden);
 			Close();
 		}
 
-		public Server server { get; set; }
+		private void SetIsWorkingVisibility(Visibility visibility)
+		{
+			tryingToConnectLabel.Visibility = visibility;
+			connectionProgress.Visibility = visibility;
+		}
 	}
 }

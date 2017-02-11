@@ -19,7 +19,7 @@ namespace Pen_and_paper_role_playing_tool
 				var networkStream = client.GetStream();
 				token.Register(() => networkStream.Close());
 				await networkStream.ReadAsync(inStream, 0, receiveBufferSize, token);
-				var message = Encoding.ASCII.GetString(inStream);
+				var message = Encoding.UTF8.GetString(inStream);
 				var length = message.IndexOf(stringEndCharacter);
 				message = message.Substring(0, length);
 				return message;
@@ -33,7 +33,7 @@ namespace Pen_and_paper_role_playing_tool
 		public static void SendMessage(TcpClient client, string message)
 		{
 			var networkStream = client.GetStream();
-			var sendBytes = Encoding.ASCII.GetBytes(message);
+			var sendBytes = Encoding.UTF8.GetBytes(message);
 			networkStream.Write(sendBytes, 0, sendBytes.Length);
 			networkStream.Flush();
 		}
