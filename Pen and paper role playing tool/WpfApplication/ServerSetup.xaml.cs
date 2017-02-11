@@ -22,44 +22,29 @@ namespace WpfApplication
 	/// </summary>
 	public partial class ServerSetup : Window
 	{
-		public Server Server { get; set; }
+		public Servers Servers { get; set; }
+		public string ChatName { get; set; }
 		public ServerSetup()
 		{
 			InitializeComponent();
 			var addresses = Dns.GetHostAddresses(Dns.GetHostName());
 			var stringBuilder = new StringBuilder();
 			foreach (var address in addresses)
-			{
 				stringBuilder.Append(address.ToString()).Append(Environment.NewLine);
-			}
 			ipAddresses.Text = stringBuilder.ToString();
-			SetIsWorkingVisibility(Visibility.Hidden);
 		}
 
 		private void Cancel_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void Connect_Click(object sender, RoutedEventArgs e)
 		{
 			//TODO: Add an entry into the UPnP when selecting over internet.
-			Server = new Server();
-			ConnectToServer(Server);
-			SetIsWorkingVisibility(Visibility.Visible);
-		}
-
-		private async void ConnectToServer(Server server)
-		{
-			await server.EstablishConnection(8888);
-			SetIsWorkingVisibility(Visibility.Hidden);
+			Servers = new Servers();
+			ChatName = nameTextBox.Text;
 			Close();
-		}
-
-		private void SetIsWorkingVisibility(Visibility visibility)
-		{
-			tryingToConnectLabel.Visibility = visibility;
-			connectionProgress.Visibility = visibility;
 		}
 	}
 }

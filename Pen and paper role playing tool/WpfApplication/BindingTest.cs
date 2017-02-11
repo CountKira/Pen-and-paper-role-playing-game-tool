@@ -10,10 +10,11 @@ namespace WpfApplication
 {
 	class BindingTest : INotifyPropertyChanged
 	{
+		private string chatName;
 		private IClientServer clientServer;
 		private string messageOutput;
 		private string messageInput;
-
+		private Servers servers;
 		public ICommand SendButton { get; set; }
 		public ICommand ServerButton { get; set; }
 		public ICommand ClientButton { get; set; }
@@ -31,22 +32,23 @@ namespace WpfApplication
 
 		public BindingTest()
 		{
-			SendButton = new RelayCommand(Send_Click);
-			ServerButton = new RelayCommand(MenuServerItem_Click);
-			ClientButton = new RelayCommand(MenuClientItem_Click);
+			SendButton = new RelayCommand(Send);
+			ServerButton = new RelayCommand(MenuServerItem);
+			ClientButton = new RelayCommand(MenuClientItem);
 		}
 
 		//TODO: Handle the case that the server or client could not be initiated
-		private void MenuServerItem_Click(object obj)
+		private void MenuServerItem(object obj)
 		{
 			var serverSetup = new ServerSetup();
 			serverSetup.ShowDialog();
 
 			TextBoxWriteLine("Connection established");
-			clientServer = serverSetup.Server;
-			ReceiveMessagesAsync();
+			servers = serverSetup.Servers;
+			servers.Writer += TextBoxWriteLine;
+			chatName = serverSetup.ChatName;
 		}
-		private void MenuClientItem_Click(object obj)
+		private void MenuClientItem(object obj)
 		{
 			var clientSetup = new ClientSetup();
 			clientSetup.ShowDialog();
@@ -54,22 +56,27 @@ namespace WpfApplication
 			TextBoxWriteLine("Connection established");
 			clientServer = clientSetup.Client;
 			ReceiveMessagesAsync();
+			chatName = clientSetup.ChatName;
 		}
-		private void Send_Click(object obj)
+		private void Send(object obj)
 		{
 			var text = obj.ToString();
 			Console.WriteLine(MessageInput);
+			text = $"{chatName}: {text}";
+
 			clientServer?.SendMessage(text);
-			TextBoxWriteLine($"Server: {text}");
+			servers?.SendMessage(text);
+
+			TextBoxWriteLine(text);
 			MessageInput = "";
 		}
 
 		private async void ReceiveMessagesAsync()
 		{
-			while (true)
+			while (clientServer != null)
 			{
 				var message = await clientServer.ReceiveMessage(new CancellationToken());
-				TextBoxWriteLine($"Client: {message}");
+				TextBoxWriteLine(message);
 			}
 		}
 

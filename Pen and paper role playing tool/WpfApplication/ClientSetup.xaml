@@ -11,6 +11,10 @@
 			<Label>Server IP:</Label>
 			<TextBox Name="ipAddressBox" Width="100"/>
 		</StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<Label>Chat name:</Label>
+			<TextBox Name="chatName" Width="100"/>
+		</StackPanel>
 		<Button Click="Connect_Click" IsDefault="True" Margin="10">Connect</Button>
 
 	</StackPanel>

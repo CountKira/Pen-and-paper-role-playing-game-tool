@@ -20,17 +20,21 @@ namespace WpfApplication
 	/// </summary>
 	public partial class ClientSetup : Window
 	{
+		public string ChatName { get; set; }
+		public Client Client { get; set; }
+
 		public ClientSetup()
 		{
 			InitializeComponent();
 		}
-		public Client Client { get; set; }
+
 		private void Connect_Click(object sender, RoutedEventArgs e)
 		{
 			var client = new Client(8888, ipAddressBox.Text);
 			if (client.TryConnectingToServer())
 			{
 				Client = client;
+				ChatName = chatName.Text;
 				Close();
 			}
 			else

@@ -16,7 +16,11 @@ namespace Pen_and_paper_role_playing_tool
 			listener.Start();
 			return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
 		}
-
+		public Task EstablishConnection(Server server)
+		{
+			var listener = server.listener;
+			return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
+		}
 		public void SendMessage(string input)
 		{
 			MessageHandler.SendMessage(clientSocket, input);
