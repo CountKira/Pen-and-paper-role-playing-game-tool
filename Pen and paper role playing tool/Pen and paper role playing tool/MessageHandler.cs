@@ -12,8 +12,6 @@ namespace Pen_and_paper_role_playing_tool
 
 		public static async Task<string> ReceiveMessagesAsync(TcpClient client, CancellationToken token)
 		{
-			try
-			{
 				var inStream = new byte[65536];
 				var receiveBufferSize = client.ReceiveBufferSize;
 				var networkStream = client.GetStream();
@@ -23,15 +21,11 @@ namespace Pen_and_paper_role_playing_tool
 				var length = message.IndexOf(stringEndCharacter);
 				message = message.Substring(0, length);
 				return message;
-			}
-			catch (Exception)
-			{
-				return "";
-			}
 		}
 
 		public static void SendMessage(TcpClient client, string message)
 		{
+			//TODO: Throws an exception when the server gets closed
 			var networkStream = client.GetStream();
 			var sendBytes = Encoding.UTF8.GetBytes(message);
 			networkStream.Write(sendBytes, 0, sendBytes.Length);

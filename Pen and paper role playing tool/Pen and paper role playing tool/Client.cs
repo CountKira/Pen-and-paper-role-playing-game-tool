@@ -24,12 +24,12 @@ namespace Pen_and_paper_role_playing_tool
 			try
 			{
 				client.Connect(address, port);
+				return true;
 			}
 			catch (Exception)
 			{
 				return false;
 			}
-			return true;
 		}
 
 		public void SendMessage(string input)
@@ -39,19 +39,8 @@ namespace Pen_and_paper_role_playing_tool
 
 		public Task<string> ReceiveMessage(CancellationToken token)
 		{
-			try
-			{
 				return MessageHandler.ReceiveMessagesAsync(client, token);
-			}
-			catch (Exception ex)
-			{
-				//TODO: Remove Console.WriteLine
-				Console.WriteLine(ex.ToString());
-				return null;
-			}
 		}
-
-		private void WriteMessageToConsole(string message) => Console.WriteLine($"{message}");
 
 		public void DisconnectFromServer()
 		{

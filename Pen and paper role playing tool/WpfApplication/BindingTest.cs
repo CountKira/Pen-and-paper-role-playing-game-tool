@@ -1,4 +1,5 @@
 ﻿using Pen_and_paper_role_playing_tool;
+using StefanRiedmillerUtility;
 using System;
 using System.ComponentModel;
 using System.Threading;
@@ -18,7 +19,6 @@ namespace WpfApplication
 		public ICommand SendButton { get; set; }
 		public ICommand ServerButton { get; set; }
 		public ICommand ClientButton { get; set; }
-		public event PropertyChangedEventHandler PropertyChanged;
 		public string MessageOutput
 		{
 			get => messageOutput;
@@ -29,6 +29,7 @@ namespace WpfApplication
 			get => messageInput;
 			set { messageInput = value; OnPropertyChanged(nameof(MessageInput)); }
 		}
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		public BindingTest()
 		{
@@ -42,27 +43,30 @@ namespace WpfApplication
 		{
 			var serverSetup = new ServerSetup();
 			serverSetup.ShowDialog();
-
-			TextBoxWriteLine("Connection established");
-			servers = serverSetup.Servers;
-			servers.Writer += TextBoxWriteLine;
-			chatName = serverSetup.ChatName;
+			if (serverSetup.FinishedSuccesfully())
+			{
+				TextBoxWriteLine("Connection opened. Waiting for clients.");
+				servers = serverSetup.Servers;
+				servers.Writer += TextBoxWriteLine;
+				chatName = serverSetup.ChatName;
+			}
 		}
 		private void MenuClientItem(object obj)
 		{
 			var clientSetup = new ClientSetup();
-			clientSetup.ShowDialog();
+			var result = clientSetup.ShowDialog();
 
-			TextBoxWriteLine("Connection established");
-			clientServer = clientSetup.Client;
-			ReceiveMessagesAsync();
-			chatName = clientSetup.ChatName;
+			if (clientSetup.DialogResult ?? false)
+			{
+				TextBoxWriteLine("Connection established");
+				clientServer = clientSetup.Client;
+				ReceiveMessagesAsync();
+				chatName = clientSetup.ChatName;
+			}
 		}
 		private void Send(object obj)
 		{
-			var text = obj.ToString();
-			Console.WriteLine(MessageInput);
-			text = $"{chatName}: {text}";
+			var text = $"{chatName}: {MessageInput}";
 
 			clientServer?.SendMessage(text);
 			servers?.SendMessage(text);
@@ -75,8 +79,15 @@ namespace WpfApplication
 		{
 			while (clientServer != null)
 			{
-				var message = await clientServer.ReceiveMessage(new CancellationToken());
-				TextBoxWriteLine(message);
+				try
+				{
+					var message = await clientServer.ReceiveMessage(new CancellationToken());
+					TextBoxWriteLine(message);
+				}
+				catch (Exception)
+				{
+					return;
+				}
 			}
 		}
 

@@ -4,8 +4,9 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:WpfApplication"
+		xmlns:p="clr-namespace:WpfApplication.Properties"
 		mc:Ignorable="d"
-		Title="ServerSetup" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+		Title="Server setup" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
 	<DockPanel>
 		<Grid>
 			<Grid.RowDefinitions>
@@ -18,18 +19,18 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 			<StackPanel Margin="5">
-				<Label>Local IP addresses:</Label>
+				<Label Content="{x:Static p:Resources.Local_IP_address}"/>
 				<TextBlock Name="ipAddresses" />
 			</StackPanel>
 			<StackPanel Grid.Column="1" Margin="5">
-				<CheckBox Name="internetEnabled">Internet</CheckBox>
-				<Label IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}">Router IP address</Label>
+				<CheckBox Name="internetEnabled" Content="{x:Static p:Resources.Internet}"/>
+				<Label IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}" Content="{x:Static p:Resources.Router_IP_address}"/>
 				<TextBox IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}" />
 			</StackPanel>
-			<Label Grid.Row="1">Chat Name:</Label>
+			<Label Grid.Row="1" Content="{x:Static p:Resources.Chat_name}"/>
 			<TextBox Name="nameTextBox" Grid.Row="1" Grid.Column="1"></TextBox>
-			<Button Grid.Row="2" Margin="5" Click="Connect_Click" IsDefault="True">Open connection</Button>
-			<Button Grid.Row="2" Grid.Column="1" Margin="5" Click="Cancel_Click">Cancel</Button>
+			<Button Grid.Row="2" Margin="5" Click="Connect_Click" IsDefault="True" Content="{x:Static p:Resources.Open_connection}"/>
+			<Button Grid.Row="2" Grid.Column="1" Margin="5" IsCancel="True" Content="{x:Static p:Resources.Cancel}"/>
 		</Grid>
 	</DockPanel>
 </Window>

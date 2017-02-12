@@ -4,8 +4,9 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:WpfApplication"
+		xmlns:p = "clr-namespace:WpfApplication.Properties"
 		mc:Ignorable="d"
-		Title="MainWindow" Height="420" Width="640">
+		Title="Main window" Height="420" Width="640">
 	<Window.DataContext>
 		<local:BindingTest/>
 	</Window.DataContext>
@@ -25,9 +26,11 @@
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
-			<TextBlock Grid.ColumnSpan="2" Name="messageOutput" Text="{Binding MessageOutput}"/>
-			<TextBox Grid.Row="1" Name="messageInput" Text="{Binding MessageInput}"></TextBox>
-			<Button Grid.Row="1" Grid.Column="1" Padding="5" IsDefault="True" Command="{Binding SendButton}" CommandParameter="{Binding Path=Text, ElementName=messageInput}">Send</Button>
+			<ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+				<TextBlock Name="messageOutput" Text="{Binding MessageOutput}"/>
+			</ScrollViewer>
+			<TextBox Grid.Row="1" Name="messageInput" Text="{Binding MessageInput, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+			<Button Grid.Row="1" Grid.Column="1" Padding="5" IsDefault="True" Command="{Binding SendButton}" Content="{x:Static p:Resources.Send}"/>
 		</Grid>
 	</DockPanel>
 </Window>

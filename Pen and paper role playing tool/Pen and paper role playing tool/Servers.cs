@@ -35,13 +35,22 @@ namespace Pen_and_paper_role_playing_tool
 		{
 			while (true)
 			{
-				var message = await server.ReceiveMessage(token);
-				foreach (var serve in servers)
+				try
 				{
-					if (serve!=server)
-						serve.SendMessage(message);
+					var message = await server.ReceiveMessage(token);
+					foreach (var serveritem in servers)
+					{
+						if (serveritem != server)
+							serveritem.SendMessage(message);
+					}
+					Writer(message);
 				}
-				Writer(message);
+				catch (Exception)
+				{
+					//TODO: Have to check if this needs to be thread safe
+					servers.Remove(server);
+					return;
+				}
 			};
 		}
 

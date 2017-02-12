@@ -4,18 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication"
+        xmlns:p="clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="ClientSetup" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+        Title="Client setup" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
 	<StackPanel FocusManager.FocusedElement="{Binding ElementName=ipAddressBox}">
 		<StackPanel Orientation="Horizontal" Margin="10">
-			<Label>Server IP:</Label>
+			<Label Content="{x:Static p:Resources.Server_IP}"/>
 			<TextBox Name="ipAddressBox" Width="100"/>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal">
-			<Label>Chat name:</Label>
+			<Label Content="{x:Static p:Resources.Chat_name}" />
 			<TextBox Name="chatName" Width="100"/>
 		</StackPanel>
-		<Button Click="Connect_Click" IsDefault="True" Margin="10">Connect</Button>
+		<Button Click="Connect_Click" Margin="10" IsDefault="True" Content="{x:Static p:Resources.Connect}"/>
+		<Button IsCancel="True"  Margin="10" Content="{x:Static p:Resources.Cancel}"/>
 
 	</StackPanel>
 </Window>

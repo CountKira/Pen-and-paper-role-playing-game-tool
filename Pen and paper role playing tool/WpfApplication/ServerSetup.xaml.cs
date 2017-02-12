@@ -34,16 +34,12 @@ namespace WpfApplication
 			ipAddresses.Text = stringBuilder.ToString();
 		}
 
-		private void Cancel_Click(object sender, RoutedEventArgs e)
-		{
-			Close();
-		}
-
 		private void Connect_Click(object sender, RoutedEventArgs e)
 		{
 			//TODO: Add an entry into the UPnP when selecting over internet.
 			Servers = new Servers();
 			ChatName = nameTextBox.Text;
+			DialogResult = true;
 			Close();
 		}
 	}

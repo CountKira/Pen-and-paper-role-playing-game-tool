@@ -35,6 +35,7 @@ namespace WpfApplication
 			{
 				Client = client;
 				ChatName = chatName.Text;
+				DialogResult = true;
 				Close();
 			}
 			else
