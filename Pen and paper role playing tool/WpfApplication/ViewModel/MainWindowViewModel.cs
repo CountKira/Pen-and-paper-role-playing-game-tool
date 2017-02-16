@@ -1,4 +1,5 @@
-﻿using Pen_and_paper_role_playing_tool;
+﻿using DCOM.WPF.MVVM;
+using Pen_and_paper_role_playing_tool;
 using StefanRiedmillerUtility;
 using System;
 using System.ComponentModel;
@@ -6,11 +7,13 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
+using WpfApplication.Properties;
+using static WpfApplication.Properties.Resources;
 namespace WpfApplication
 {
-	class BindingTest : INotifyPropertyChanged
+	class MainWindowViewModel : INotifyPropertyChanged
 	{
+		IDialogService dialogService;
 		private string chatName;
 		private IClientServer clientServer;
 		private string messageOutput;
@@ -31,8 +34,9 @@ namespace WpfApplication
 		}
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public BindingTest()
+		public MainWindowViewModel(IDialogService service)
 		{
+			dialogService = service;
 			SendButton = new RelayCommand(Send);
 			ServerButton = new RelayCommand(MenuServerItem);
 			ClientButton = new RelayCommand(MenuClientItem);
@@ -41,27 +45,26 @@ namespace WpfApplication
 		//TODO: Handle the case that the server or client could not be initiated
 		private void MenuServerItem(object obj)
 		{
-			var serverSetup = new ServerSetup();
-			serverSetup.ShowDialog();
-			if (serverSetup.FinishedSuccesfully())
+			var serverSetupViewModel = new ServerSetupViewModel();
+			var result = dialogService.ShowDialog(serverSetupViewModel);
+			if (result == true)
 			{
-				TextBoxWriteLine("Connection opened. Waiting for clients.");
-				servers = serverSetup.Servers;
-				servers.Writer += TextBoxWriteLine;
-				chatName = serverSetup.ChatName;
+				TextBoxWriteLine(Connection_opened_Waiting_for_clients);
+				servers = serverSetupViewModel.Servers;
+				servers.Writer += (object sender, WriterEventArgs message) => TextBoxWriteLine(message.Message);
+				chatName = serverSetupViewModel.ChatName;
 			}
 		}
 		private void MenuClientItem(object obj)
 		{
-			var clientSetup = new ClientSetup();
-			var result = clientSetup.ShowDialog();
-
-			if (clientSetup.DialogResult ?? false)
+			var clientSetupViewModel = new ClientSetupViewModel();
+			var result = dialogService.ShowDialog(clientSetupViewModel);
+			if (result == true)
 			{
-				TextBoxWriteLine("Connection established");
-				clientServer = clientSetup.Client;
+				TextBoxWriteLine(Connection_established);
+				clientServer = clientSetupViewModel.Client;
 				ReceiveMessagesAsync();
-				chatName = clientSetup.ChatName;
+				chatName = clientSetupViewModel.ChatName;
 			}
 		}
 		private void Send(object obj)

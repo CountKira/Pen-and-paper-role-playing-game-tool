@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Pen_and_paper_role_playing_tool
 {
-	public class Client : IClientServer
+	public class Client : IClientServer, IDisposable
 	{
+
 		private TcpClient client = new TcpClient();
 		private int port;
 		private string address;
-
 		public Client(int port, string address)
 		{
 			this.port = port;
@@ -39,12 +39,25 @@ namespace Pen_and_paper_role_playing_tool
 
 		public Task<string> ReceiveMessage(CancellationToken token)
 		{
-				return MessageHandler.ReceiveMessagesAsync(client, token);
+			return MessageHandler.ReceiveMessagesAsync(client, token);
 		}
 
-		public void DisconnectFromServer()
+		#region IDisposable Support
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "client")]
+		protected virtual void Dispose(bool disposing)
 		{
-			client.Close();
+			if (disposing)
+			{
+				client?.Close();
+			}
 		}
+
+		// This code added to correctly implement the disposable pattern.
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		#endregion
 	}
 }

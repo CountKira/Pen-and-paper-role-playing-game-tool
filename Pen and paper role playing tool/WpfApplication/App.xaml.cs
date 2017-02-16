@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DCOM.WPF.MVVM;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -17,7 +18,6 @@ namespace WpfApplication
 	{
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
-#if DEBUG
 			foreach (var arg in e.Args)
 			{
 				//TODO: Remove setting the culture with arguments after debug
@@ -29,7 +29,14 @@ namespace WpfApplication
 				{
 				}
 			}
-#endif
+			IDialogService dialogService = new DialogService(MainWindow);
+			dialogService.Register<ClientSetupViewModel, ClientSetup>();
+			dialogService.Register<ServerSetupViewModel, ServerSetup>();
+
+			var viewModel = new MainWindowViewModel(dialogService);
+			var view = new MainWindow { DataContext = viewModel };
+
+			view.ShowDialog();
 		}
 	}
 }

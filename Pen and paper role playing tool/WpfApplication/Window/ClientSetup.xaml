@@ -6,18 +6,18 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:p="clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="Client setup" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+        Title="{x:Static p:Resources.Client_setup_window}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
 	<StackPanel FocusManager.FocusedElement="{Binding ElementName=ipAddressBox}">
 		<StackPanel Orientation="Horizontal" Margin="10">
 			<Label Content="{x:Static p:Resources.Server_IP}"/>
-			<TextBox Name="ipAddressBox" Width="100"/>
+			<TextBox Name="ipAddressBox" Text="{Binding IpAddressbox, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal">
 			<Label Content="{x:Static p:Resources.Chat_name}" />
-			<TextBox Name="chatName" Width="100"/>
+			<TextBox Text="{Binding ChatName, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
 		</StackPanel>
-		<Button Click="Connect_Click" Margin="10" IsDefault="True" Content="{x:Static p:Resources.Connect}"/>
-		<Button IsCancel="True"  Margin="10" Content="{x:Static p:Resources.Cancel}"/>
+		<Button Command="{Binding Connect_Click}"	Margin="10" IsDefault="True"	Content="{x:Static p:Resources.Connect}"/>
+		<Button Command="{Binding CancelClick}"		Margin="10"	IsCancel="True"		Content="{x:Static p:Resources.Cancel}"/>
 
 	</StackPanel>
 </Window>

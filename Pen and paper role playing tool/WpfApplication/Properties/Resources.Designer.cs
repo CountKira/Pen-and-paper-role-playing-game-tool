@@ -79,11 +79,56 @@ namespace WpfApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chat.
+        /// </summary>
+        public static string Chat_window {
+            get {
+                return ResourceManager.GetString("Chat_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client setup.
+        /// </summary>
+        public static string Client_setup_window {
+            get {
+                return ResourceManager.GetString("Client_setup_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
         public static string Connect {
             get {
                 return ResourceManager.GetString("Connect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection established.
+        /// </summary>
+        public static string Connection_established {
+            get {
+                return ResourceManager.GetString("Connection_established", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection opened. Waiting for clients..
+        /// </summary>
+        public static string Connection_opened_Waiting_for_clients {
+            get {
+                return ResourceManager.GetString("Connection_opened_Waiting_for_clients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not establish a connection with the server..
+        /// </summary>
+        public static string Could_not_establish_a_connection_with_the_server {
+            get {
+                return ResourceManager.GetString("Could_not_establish_a_connection_with_the_server", resourceCulture);
             }
         }
         
@@ -138,6 +183,15 @@ namespace WpfApplication.Properties {
         public static string Server_IP {
             get {
                 return ResourceManager.GetString("Server_IP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server setup.
+        /// </summary>
+        public static string Server_setup_window {
+            get {
+                return ResourceManager.GetString("Server_setup_window", resourceCulture);
             }
         }
     }

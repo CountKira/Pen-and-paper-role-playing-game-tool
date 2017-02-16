@@ -144,4 +144,22 @@
   <data name="Server_IP" xml:space="preserve">
     <value>Server IP</value>
   </data>
+  <data name="Connection_established" xml:space="preserve">
+    <value>Verbindung hergestellt</value>
+  </data>
+  <data name="Connection_opened_Waiting_for_clients" xml:space="preserve">
+    <value>Verbindung geöffnet. Warte auf Clients</value>
+  </data>
+  <data name="Could_not_establish_a_connection_with_the_server" xml:space="preserve">
+    <value>Es konnte keine Verbindung mit einem Server hergestellt werden.</value>
+  </data>
+  <data name="Server_setup_window" xml:space="preserve">
+    <value>Server konfigurieren</value>
+  </data>
+  <data name="Chat_window" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="Client_setup_window" xml:space="preserve">
+    <value>Client konfigurieren</value>
+  </data>
 </root>

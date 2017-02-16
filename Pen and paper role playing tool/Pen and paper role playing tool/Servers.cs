@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Pen_and_paper_role_playing_tool
 {
 	public class Servers
 	{
 		List<Server> servers = new List<Server>();
-		public event Action<string> Writer;
+		public EventHandler<WriterEventArgs> Writer;
 		public Servers()
 		{
 			OpenNewServerAsync();
@@ -43,7 +40,7 @@ namespace Pen_and_paper_role_playing_tool
 						if (serveritem != server)
 							serveritem.SendMessage(message);
 					}
-					Writer(message);
+					Writer(this, new WriterEventArgs(message));
 				}
 				catch (Exception)
 				{

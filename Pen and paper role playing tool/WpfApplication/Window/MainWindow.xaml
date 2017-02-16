@@ -6,10 +6,7 @@
 		xmlns:local="clr-namespace:WpfApplication"
 		xmlns:p = "clr-namespace:WpfApplication.Properties"
 		mc:Ignorable="d"
-		Title="Main window" Height="420" Width="640">
-	<Window.DataContext>
-		<local:BindingTest/>
-	</Window.DataContext>
+		Title="{x:Static p:Resources.Chat_window}" Height="420" Width="640">
 	<DockPanel FocusManager.FocusedElement="{Binding ElementName=messageInput}">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="_Chat">
@@ -29,7 +26,7 @@
 			<ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 				<TextBlock Name="messageOutput" Text="{Binding MessageOutput}"/>
 			</ScrollViewer>
-			<TextBox Grid.Row="1" Name="messageInput" Text="{Binding MessageInput, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+			<TextBox Grid.Row="1" Name="messageInput" Text="{Binding MessageInput, UpdateSourceTrigger=PropertyChanged}"/>
 			<Button Grid.Row="1" Grid.Column="1" Padding="5" IsDefault="True" Command="{Binding SendButton}" Content="{x:Static p:Resources.Send}"/>
 		</Grid>
 	</DockPanel>
