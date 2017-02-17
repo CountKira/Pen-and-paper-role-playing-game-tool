@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:p="clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.Client_setup_window}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+        Title="{x:Static p:Resources.Client_setup_window}"
+		SizeToContent="WidthAndHeight" ResizeMode="NoResize">
 	<StackPanel FocusManager.FocusedElement="{Binding ElementName=ipAddressBox}">
 		<StackPanel Orientation="Horizontal" Margin="10">
 			<Label Content="{x:Static p:Resources.Server_IP}"/>

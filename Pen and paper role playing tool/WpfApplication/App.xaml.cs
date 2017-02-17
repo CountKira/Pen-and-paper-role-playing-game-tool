@@ -1,13 +1,9 @@
 ﻿using DCOM.WPF.MVVM;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
+using WpfApplication.ViewModel;
 
 namespace WpfApplication
 {
@@ -18,6 +14,7 @@ namespace WpfApplication
 	{
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
+#if DEBUG
 			foreach (var arg in e.Args)
 			{
 				//TODO: Remove setting the culture with arguments after debug
@@ -25,18 +22,25 @@ namespace WpfApplication
 				{
 					Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(arg);
 				}
-				catch (Exception)
+				catch (CultureNotFoundException cultureException)
 				{
+					Debug.WriteLine(cultureException.Message);
 				}
 			}
+#endif
 			IDialogService dialogService = new DialogService(MainWindow);
-			dialogService.Register<ClientSetupViewModel, ClientSetup>();
-			dialogService.Register<ServerSetupViewModel, ServerSetup>();
+			RegisterViewModels(dialogService);
 
 			var viewModel = new MainWindowViewModel(dialogService);
 			var view = new MainWindow { DataContext = viewModel };
 
 			view.ShowDialog();
+		}
+
+		private static void RegisterViewModels(IDialogService dialogService)
+		{
+			dialogService.Register<ClientSetupViewModel, ClientSetup>();
+			dialogService.Register<ServerSetupViewModel, ServerSetup>();
 		}
 	}
 }

@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pen_and_paper_role_playing_tool
 {
-	public class Servers
+	public class Servers : IClientServer
 	{
 		List<Server> servers = new List<Server>();
-		public EventHandler<WriterEventArgs> Writer;
-		public Servers()
+		public EventHandler<WriterEventArgs> Writer { get; set; }
+		public int PortNumber;
+
+		public Servers(int portNumber)
 		{
+			PortNumber = portNumber;
 			OpenNewServerAsync();
 		}
 
@@ -22,7 +27,9 @@ namespace Pen_and_paper_role_playing_tool
 				if (servers.Count > 0)
 					await server.EstablishConnection(servers[0]);
 				else
-					await server.EstablishConnection(8888);
+				{
+					await server.EstablishConnection(PortNumber);
+				}
 				new Thread(() => ReceiveMessagesAsync(token, server)).Start();
 				servers.Add(server);
 			}
@@ -55,6 +62,11 @@ namespace Pen_and_paper_role_playing_tool
 		{
 			foreach (var server in servers)
 				server.SendMessage(input);
+		}
+
+		public Task<string> ReceiveMessage(CancellationToken token)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

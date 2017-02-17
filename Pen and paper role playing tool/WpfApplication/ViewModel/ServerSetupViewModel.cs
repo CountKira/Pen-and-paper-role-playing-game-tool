@@ -2,15 +2,16 @@
 using Pen_and_paper_role_playing_tool;
 using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Net;
 using System.Text;
 using System.Windows.Input;
 
-namespace WpfApplication
+namespace WpfApplication.ViewModel
 {
-	class ServerSetupViewModel : INotifyPropertyChanged, IDialogRequestClose
+	class ServerSetupViewModel : INotifyPropertyChanged, IDialogRequestClose, IClientServerViewModel
 	{
-		public Servers Servers { get; set; }
+		public IClientServer ClientServer { get; set; }
 		private string chatName;
 		public string ChatName
 		{
@@ -25,19 +26,23 @@ namespace WpfApplication
 		public ICommand CancelCommand { get; set; }
 		public ServerSetupViewModel()
 		{
-			ConnectCommand = new ActionCommand(Connect_Click);
+			ConnectCommand = new ActionCommand(CreateNewServers);
 			CancelCommand = new ActionCommand(p => CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false)));
 			var addresses = Dns.GetHostAddresses(Dns.GetHostName());
 			var stringBuilder = new StringBuilder();
 			foreach (var address in addresses)
 				stringBuilder.Append(address.ToString()).Append(Environment.NewLine);
 			ipAddresses = stringBuilder.ToString();
+#if DEBUG
+			ChatName = "Sarah";
+#endif
 		}
 
-		private void Connect_Click(object sender)
+		private void CreateNewServers(object sender)
 		{
 			//TODO: Add an entry into the UPnP when selecting over Internet.
-			Servers = new Servers();
+			var portNumber = int.Parse(ConfigurationManager.AppSettings["portNumber"]);
+			ClientServer = new Servers(portNumber);
 			CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(true));
 		}
 		public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;

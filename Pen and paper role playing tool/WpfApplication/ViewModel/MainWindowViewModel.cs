@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApplication.Properties;
 using static WpfApplication.Properties.Resources;
-namespace WpfApplication
+namespace WpfApplication.ViewModel
 {
 	class MainWindowViewModel : INotifyPropertyChanged
 	{
@@ -18,7 +18,6 @@ namespace WpfApplication
 		private IClientServer clientServer;
 		private string messageOutput;
 		private string messageInput;
-		private Servers servers;
 		public ICommand SendButton { get; set; }
 		public ICommand ServerButton { get; set; }
 		public ICommand ClientButton { get; set; }
@@ -37,9 +36,9 @@ namespace WpfApplication
 		public MainWindowViewModel(IDialogService service)
 		{
 			dialogService = service;
-			SendButton = new RelayCommand(Send);
-			ServerButton = new RelayCommand(MenuServerItem);
-			ClientButton = new RelayCommand(MenuClientItem);
+			SendButton = new ActionCommand(Send);
+			ServerButton = new ActionCommand(MenuServerItem);
+			ClientButton = new ActionCommand(MenuClientItem);
 		}
 
 		//TODO: Handle the case that the server or client could not be initiated
@@ -47,24 +46,22 @@ namespace WpfApplication
 		{
 			var serverSetupViewModel = new ServerSetupViewModel();
 			var result = dialogService.ShowDialog(serverSetupViewModel);
-			if (result == true)
-			{
-				TextBoxWriteLine(Connection_opened_Waiting_for_clients);
-				servers = serverSetupViewModel.Servers;
-				servers.Writer += (object sender, WriterEventArgs message) => TextBoxWriteLine(message.Message);
-				chatName = serverSetupViewModel.ChatName;
-			}
+			SetupServerOrClient(serverSetupViewModel, result);
 		}
 		private void MenuClientItem(object obj)
 		{
 			var clientSetupViewModel = new ClientSetupViewModel();
 			var result = dialogService.ShowDialog(clientSetupViewModel);
+			SetupServerOrClient(clientSetupViewModel, result);
+		}
+		private void SetupServerOrClient(IClientServerViewModel clientServerViewModel, bool? result)
+		{
 			if (result == true)
 			{
 				TextBoxWriteLine(Connection_established);
-				clientServer = clientSetupViewModel.Client;
-				ReceiveMessagesAsync();
-				chatName = clientSetupViewModel.ChatName;
+				clientServer = clientServerViewModel.ClientServer;
+				clientServer.Writer += (object sender, WriterEventArgs message) => TextBoxWriteLine(message.Message);
+				chatName = clientServerViewModel.ChatName;
 			}
 		}
 		private void Send(object obj)
@@ -72,26 +69,8 @@ namespace WpfApplication
 			var text = $"{chatName}: {MessageInput}";
 
 			clientServer?.SendMessage(text);
-			servers?.SendMessage(text);
-
 			TextBoxWriteLine(text);
 			MessageInput = "";
-		}
-
-		private async void ReceiveMessagesAsync()
-		{
-			while (clientServer != null)
-			{
-				try
-				{
-					var message = await clientServer.ReceiveMessage(new CancellationToken());
-					TextBoxWriteLine(message);
-				}
-				catch (Exception)
-				{
-					return;
-				}
-			}
 		}
 
 		private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

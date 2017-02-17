@@ -10,6 +10,20 @@ namespace Pen_and_paper_role_playing_tool
 	{
 		private TcpListener listener;
 		private TcpClient clientSocket;
+
+		public EventHandler<WriterEventArgs> Writer
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		public Task EstablishConnection(int port)
 		{
 			listener = new TcpListener(IPAddress.Any, port);

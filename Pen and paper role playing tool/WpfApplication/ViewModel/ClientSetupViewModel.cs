@@ -2,21 +2,22 @@
 using Pen_and_paper_role_playing_tool;
 using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
 using static WpfApplication.Properties.Resources;
 
-namespace WpfApplication
+namespace WpfApplication.ViewModel
 {
-	class ClientSetupViewModel : INotifyPropertyChanged, IDialogRequestClose
+	class ClientSetupViewModel : INotifyPropertyChanged, IDialogRequestClose, IClientServerViewModel
 	{
+		public IClientServer ClientServer { get; set; }
 		private string chatName;
 		public string ChatName
 		{
 			get => chatName;
 			set { chatName = value; OnPropertyChanged(nameof(ChatName)); }
 		}
-		public Client Client { get; set; }
 		public string ipAddressbox;
 		public string IpAddressbox
 		{
@@ -35,13 +36,19 @@ namespace WpfApplication
 		{
 			Connect_Click = new ActionCommand(Connect_Click2);
 			CancelClick = new ActionCommand(p => CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false)));
+#if DEBUG
+			ChatName = "Bill";
+			IpAddressbox = "192.168.1.5";
+#endif
 		}
 		private void Connect_Click2(object sender)
 		{
-			var client = new Client(8888, ipAddressbox);
+
+			var portNumber = int.Parse(ConfigurationManager.AppSettings["portNumber"]);
+			var client = new Client(portNumber, ipAddressbox);
 			if (client.TryConnectingToServer())
 			{
-				Client = client;
+				ClientServer = client;
 				CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(true));
 			}
 			else
