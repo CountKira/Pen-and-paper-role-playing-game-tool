@@ -1,56 +1,40 @@
 ﻿using System;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pen_and_paper_role_playing_tool
 {
-	public class Server : IClientServer
-	{
-		private TcpListener listener;
-		private TcpClient clientSocket;
+    public class Server : IClientServer
+    {
+        private TcpListener listener;
+        private TcpClient clientSocket;
+        public EventHandler<WriterEventArgs> Writer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-		public EventHandler<WriterEventArgs> Writer
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+        public Task EstablishConnection(int port)
+        {
+            listener = new TcpListener(IPAddress.Any, port);
+            listener.Start();
+            return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
+        }
 
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
+        public Task EstablishConnection(Server server)
+        {
+            var listener = server.listener;
+            return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
+        }
 
-		public Task EstablishConnection(int port)
-		{
-			listener = new TcpListener(IPAddress.Any, port);
-			listener.Start();
-			return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
-		}
-		public Task EstablishConnection(Server server)
-		{
-			var listener = server.listener;
-			return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
-		}
-		public void SendMessage(string input)
-		{
-			MessageHandler.SendMessage(clientSocket, input);
-		}
+        public void SendMessage(MessageHolder message) => MessageHandler.SendMessage(clientSocket, message);
 
-		public Task<string> ReceiveMessage(CancellationToken token)
-		{
-			if (token.IsCancellationRequested || !clientSocket.Client.Connected)
-				return null;
-			var receiver = MessageHandler.ReceiveMessagesAsync(clientSocket, token);
-			return receiver;
-		}
+        public Task<MessageHolder> ReceiveMessage(CancellationToken token)
+        {
+            if (token.IsCancellationRequested || !clientSocket.Client.Connected)
+                return null;
+            var receiver = MessageHandler.ReceiveMessagesAsync(clientSocket, token);
+            return receiver;
+        }
 
-		public void StopServer()
-		{
-			listener.Stop();
-		}
-	}
+        public void StopServer() => listener.Stop();
+    }
 }

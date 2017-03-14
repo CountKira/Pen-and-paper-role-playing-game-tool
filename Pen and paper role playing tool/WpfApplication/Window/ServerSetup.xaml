@@ -7,30 +7,30 @@
 		xmlns:p="clr-namespace:WpfApplication.Properties"
 		mc:Ignorable="d"
 		Title="{x:Static p:Resources.Server_setup_window}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
-	<DockPanel FocusManager.FocusedElement="{Binding ElementName=nameTextBox}">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
-			<StackPanel Margin="5">
-				<Label Content="{x:Static p:Resources.Local_IP_address}"/>
-				<TextBlock Text="{Binding IpAddresses, UpdateSourceTrigger=PropertyChanged}"/>
-			</StackPanel>
-			<StackPanel Grid.Column="1" Margin="5">
-				<CheckBox Name="internetEnabled" Content="{x:Static p:Resources.Internet}"/>
-				<Label IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}" Content="{x:Static p:Resources.Router_IP_address}"/>
-				<TextBox IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}" />
-			</StackPanel>
-			<Label Grid.Row="1" Content="{x:Static p:Resources.Chat_name}" HorizontalAlignment="Right"/>
-			<TextBox Name="nameTextBox" Text="{Binding ChatName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="5"/>
-			<Button Grid.Row="2"					Command="{Binding ConnectCommand}"	Margin="5" IsDefault="True"	Content="{x:Static p:Resources.Open_connection}"/>
-			<Button Grid.Column="1" Grid.Row="2"	Command="{Binding CancelCommand}"	Margin="5" IsCancel="True"	Content="{x:Static p:Resources.Cancel}"/>
-		</Grid>
-	</DockPanel>
+    <DockPanel FocusManager.FocusedElement="{Binding ElementName=nameTextBox}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="5">
+                <Label Content="{x:Static p:Resources.Local_IP_address}" />
+                <TextBlock Text="{Binding IpAddresses, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5">
+                <CheckBox Name="internetEnabled" Content="{x:Static p:Resources.Internet}" />
+                <Label IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}" Content="{x:Static p:Resources.Router_IP_address}" />
+                <TextBox IsEnabled="{Binding Path=IsChecked, ElementName=internetEnabled}" />
+            </StackPanel>
+            <Label Grid.Row="1" Content="{x:Static p:Resources.Chat_name}" HorizontalAlignment="Right" />
+            <TextBox Name="nameTextBox" Text="{Binding ChatName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="5" />
+            <Button Grid.Row="2"					Command="{Binding ConnectCommand}"	Margin="5" IsDefault="True"	Content="{x:Static p:Resources.Open_connection}" />
+            <Button Grid.Column="1" Grid.Row="2"	Command="{Binding CancelCommand}"	Margin="5" IsCancel="True"	Content="{x:Static p:Resources.Cancel}" />
+        </Grid>
+    </DockPanel>
 </Window>

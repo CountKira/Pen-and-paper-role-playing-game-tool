@@ -10,8 +10,8 @@
 	<DockPanel FocusManager.FocusedElement="{Binding ElementName=messageInput}">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="_Chat">
-				<MenuItem Header="_Server" Command="{Binding ServerButton}"/>
-				<MenuItem Header="_Client" Command="{Binding ClientButton}"/>
+				<MenuItem Header="_Server" Command="{Binding ServerButton}" />
+				<MenuItem Header="_Client" Command="{Binding ClientButton}" />
 			</MenuItem>
 		</Menu>
 		<Grid>
@@ -24,10 +24,10 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 			<ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-				<TextBlock Name="messageOutput" Text="{Binding MessageOutput}"/>
+				<TextBlock Name="messageOutput" Text="{Binding MessageOutput}" />
 			</ScrollViewer>
-			<TextBox Grid.Row="1" Name="messageInput" Text="{Binding MessageInput, UpdateSourceTrigger=PropertyChanged}"/>
-			<Button Grid.Row="1" Grid.Column="1" Padding="5" IsDefault="True" Command="{Binding SendButton}" Content="{x:Static p:Resources.Send}"/>
+			<TextBox Grid.Row="1" Name="messageInput" Text="{Binding MessageInput, UpdateSourceTrigger=PropertyChanged}" />
+			<Button Grid.Row="1" Grid.Column="1" Padding="5" IsDefault="True" Command="{Binding SendButton}" Content="{x:Static p:Resources.Send}" />
 		</Grid>
 	</DockPanel>
 </Window>
