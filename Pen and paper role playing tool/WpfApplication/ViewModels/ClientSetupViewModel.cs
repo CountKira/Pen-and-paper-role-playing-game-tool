@@ -1,5 +1,5 @@
-﻿using DCOM.WPF.MVVM;
-using Pen_and_paper_role_playing_tool;
+﻿using MVVM_Framework;
+using TCP_Framework;
 using System;
 using System.ComponentModel;
 using System.Configuration;
@@ -43,7 +43,7 @@ namespace WpfApplication.ViewModel
             CancelClick = new ActionCommand(p => CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false)));
 #if DEBUG
             ChatName = "Bill";
-            IpAddressbox = "192.168.1.13";
+            IpAddressbox = "127.0.0.1";
 #endif
         }
 

@@ -60,9 +60,6 @@
     <AssemblyOriginatorKeyFile>PenAndPaperRolePlayingToolWPF.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DCOM.WPF.MVVM">
-      <HintPath>..\..\..\..\..\Documents\Visual Studio 2017\Projects\DCOM.WPF.MVVM.IDialogService\DCOM.WPF.MVVM\bin\Debug\DCOM.WPF.MVVM.dll</HintPath>
-    </Reference>
     <Reference Include="StefanRiedmillerUtility">
       <HintPath>..\..\..\..\..\Documents\visual studio 2017\Projects\RiedmillerStefanExtensions\StefanRiedmillerUtility\bin\Debug\StefanRiedmillerUtility.dll</HintPath>
     </Reference>
@@ -88,21 +85,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\IClientServerViewModel.cs" />
-    <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="Window\ClientSetup.xaml.cs">
+    <Compile Include="ViewModels\BoardViewModel.cs" />
+    <Compile Include="ViewModels\IClientServerViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Windows\BoardWindow.xaml.cs">
+      <DependentUpon>BoardWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ClientSetup.xaml.cs">
       <DependentUpon>ClientSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ClientSetupViewModel.cs" />
-    <Compile Include="Window\ServerSetup.xaml.cs">
+    <Compile Include="ViewModels\ClientSetupViewModel.cs" />
+    <Compile Include="Windows\ServerSetup.xaml.cs">
       <DependentUpon>ServerSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ServerSetupViewModel.cs" />
-    <Page Include="Window\ClientSetup.xaml">
+    <Compile Include="ViewModels\ServerSetupViewModel.cs" />
+    <Page Include="Windows\BoardWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\MainWindow.xaml">
+    <Page Include="Windows\ClientSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -110,11 +115,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Window\MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Window\ServerSetup.xaml">
+    <Page Include="Windows\ServerSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -148,9 +153,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MVVM Framework\MVVM Framework.csproj">
+      <Project>{dbae9955-4cb4-437e-afb4-b361c1aa27cf}</Project>
+      <Name>MVVM Framework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Pen and paper role playing tool\Pen and paper role playing tool.csproj">
       <Project>{5878552c-4102-4d26-b946-414b9a89b999}</Project>
       <Name>Pen and paper role playing tool</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TCP Framework\TCP Framework.csproj">
+      <Project>{a3d67555-6d85-4220-b448-6ba9d09a8ea6}</Project>
+      <Name>TCP Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

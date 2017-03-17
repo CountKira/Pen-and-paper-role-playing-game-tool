@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Pen_and_paper_role_playing_tool
+namespace TCP_Framework
 {
     public class Client : IClientServer, IDisposable
     {
@@ -11,7 +11,7 @@ namespace Pen_and_paper_role_playing_tool
         private int port;
         private string address;
 
-        public EventHandler<WriterEventArgs> Writer { get; set; }
+        public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
 
         public Client(int port, string address)
         {
@@ -40,25 +40,18 @@ namespace Pen_and_paper_role_playing_tool
             {
                 try
                 {
-                    var message = await MessageHandler.ReceiveMessagesAsync(client, cancellationToken);
-
-                    if (message.MessageType == "Picture")
-                    {
-                        var bytes = message.Message as byte[];
-                        File.WriteAllBytes(@"ClientPicture\SpaceChem.mp4", bytes);
-                    }
-                    else
-                        Writer(this, new WriterEventArgs((string)message.Message));
+                    var data = await DataHandler.ReceiveDataAsync(client, cancellationToken);
+                    DataReceivedEvent(this, new DataReceivedEventArgs(data));
                 }
                 catch (IOException)
                 {
-                    Writer(this, new WriterEventArgs("Verbindung zum Server getrennt."));
+                    DataReceivedEvent(this, new DataReceivedEventArgs(new DateHolder { Tag = "Text", Data = "Verbindung zum Server getrennt." }));
                     return;
                 }
             }
         }
 
-        public void SendMessage(MessageHolder message) => MessageHandler.SendMessage(client, message);
+        public void SendData(DateHolder dataholder) => DataHandler.SendData(client, dataholder);
 
         #region IDisposable Support
 

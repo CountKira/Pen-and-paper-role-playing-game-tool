@@ -1,7 +1,7 @@
-﻿using DCOM.WPF.MVVM;
+﻿using MVVM_Framework;
 using System.Windows;
 
-namespace WpfApplication
+namespace WpfApplication.Windows
 {
     /// <summary>
     /// Interaction logic for ClientSetup.xaml

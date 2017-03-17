@@ -1,9 +1,10 @@
-﻿using DCOM.WPF.MVVM;
+﻿using MVVM_Framework;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Windows;
 using WpfApplication.ViewModel;
+using WpfApplication.Windows;
 
 namespace WpfApplication
 {
@@ -41,6 +42,7 @@ namespace WpfApplication
         {
             dialogService.Register<ClientSetupViewModel, ClientSetup>();
             dialogService.Register<ServerSetupViewModel, ServerSetup>();
+            dialogService.Register<BoardViewModel, BoardWindow>();
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿<Window x:Class="WpfApplication.Windows.ClientSetup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApplication"
+        xmlns:p="clr-namespace:WpfApplication.Properties"
+        mc:Ignorable="d"
+        Title="{x:Static p:Resources.Client_setup_window}"
+		SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+    <StackPanel FocusManager.FocusedElement="{Binding ElementName=ipAddressBox}">
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Label Content="{x:Static p:Resources.Server_IP}" />
+            <TextBox Name="ipAddressBox" Text="{Binding IpAddressbox, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="{x:Static p:Resources.Chat_name}" />
+            <TextBox Text="{Binding ChatName, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+        </StackPanel>
+        <Button Command="{Binding Connect_Click}"	Margin="10" IsDefault="True"	Content="{x:Static p:Resources.Connect}" />
+        <Button Command="{Binding CancelClick}"		Margin="10"	IsCancel="True"		Content="{x:Static p:Resources.Cancel}" />
+    </StackPanel>
+</Window>

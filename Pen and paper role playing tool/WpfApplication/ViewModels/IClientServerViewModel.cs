@@ -1,5 +1,5 @@
-﻿using DCOM.WPF.MVVM;
-using Pen_and_paper_role_playing_tool;
+﻿using MVVM_Framework;
+using TCP_Framework;
 
 namespace WpfApplication.ViewModel
 {

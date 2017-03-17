@@ -1,5 +1,5 @@
-﻿using DCOM.WPF.MVVM;
-using Pen_and_paper_role_playing_tool;
+﻿using MVVM_Framework;
+using TCP_Framework;
 using System;
 using System.ComponentModel;
 using System.Configuration;
@@ -46,7 +46,7 @@ namespace WpfApplication.ViewModel
         {
             //TODO: Add an entry into the UPnP when selecting over Internet.
             var portNumber = int.Parse(ConfigurationManager.AppSettings["portNumber"]);
-            ClientServer = new Servers(portNumber);
+            ClientServer = new MultiServer(portNumber);
             CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(true));
         }
 

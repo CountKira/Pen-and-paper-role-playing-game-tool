@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5878552C-4102-4D26-B946-414B9A89B999}</ProjectGuid>
+    <ProjectGuid>{A3D67555-6D85-4220-B448-6BA9D09A8EA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pen_and_paper_role_playing_tool</RootNamespace>
-    <AssemblyName>Pen and paper role playing tool</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>TCP_Framework</RootNamespace>
+    <AssemblyName>TCP Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +34,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>PenAndPaperRolePlayingTool.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>TCP Framework.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,10 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
+    <Compile Include="IClientServer.cs" />
+    <Compile Include="MessageHandler.cs" />
+    <Compile Include="MessageHolder.cs" />
+    <Compile Include="MessageReceivedEventArgs.cs" />
+    <Compile Include="MultiServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PenAndPaperRolePlayingTool.pfx" />
+    <None Include="TCP Framework.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Pen_and_paper_role_playing_tool
+namespace TCP_Framework
 {
     internal static class Serializer
     {
@@ -14,9 +14,9 @@ namespace Pen_and_paper_role_playing_tool
             }
         }
 
-        public static T Deserialize<T>(byte[] message)
+        public static T Deserialize<T>(byte[] data)
         {
-            using (var memoryStream = new MemoryStream(message))
+            using (var memoryStream = new MemoryStream(data))
                 return (T)new BinaryFormatter().Deserialize(memoryStream);
         }
     }

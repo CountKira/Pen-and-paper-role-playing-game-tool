@@ -1,10 +1,11 @@
-﻿using DCOM.WPF.MVVM;
-using Pen_and_paper_role_playing_tool;
+﻿using MVVM_Framework;
+using TCP_Framework;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 using static WpfApplication.Properties.Resources;
+using System.Windows;
 
 namespace WpfApplication.ViewModel
 {
@@ -16,6 +17,7 @@ namespace WpfApplication.ViewModel
         private string messageOutput;
         private string messageInput;
         public ICommand SendButton { get; set; }
+        public ICommand BoardButton { get; set; }
         public ICommand ServerButton { get; set; }
         public ICommand ClientButton { get; set; }
 
@@ -39,6 +41,17 @@ namespace WpfApplication.ViewModel
             SendButton = new ActionCommand(Send);
             ServerButton = new ActionCommand(MenuServerItem);
             ClientButton = new ActionCommand(MenuClientItem);
+            BoardButton = new ActionCommand(MenuBoardGameItem);
+        }
+
+        private void MenuBoardGameItem(object obj)
+        {
+            var boardViewModel = new BoardViewModel(clientServer);
+            if (clientServer != null)
+            {
+                clientServer.DataReceivedEvent += boardViewModel.DataReception;
+            }
+            dialogService.Show(boardViewModel);
         }
 
         //TODO: Handle the case that the server or client could not be initiated
@@ -62,7 +75,18 @@ namespace WpfApplication.ViewModel
             {
                 TextBoxWriteLine(Connection_established);
                 clientServer = clientServerViewModel.ClientServer;
-                clientServer.Writer += (object sender, WriterEventArgs message) => TextBoxWriteLine(message.Message);
+                clientServer.DataReceivedEvent += (object sender, DataReceivedEventArgs data) =>
+                {
+                    if (data.Dataholder.Tag == "Picture")
+                    {
+                        var bytes = data.Dataholder.Data as byte[];
+                        File.WriteAllBytes(@"ClientPicture\SpaceChem.mp4", bytes);
+                    }
+                    else if (data.Dataholder.Tag == "Text")
+                    {
+                        TextBoxWriteLine((string)data.Dataholder.Data);
+                    }
+                };
                 chatName = clientServerViewModel.ChatName;
             }
         }
@@ -71,12 +95,12 @@ namespace WpfApplication.ViewModel
         {
             var text = $"{chatName}: {MessageInput}";
 
-            MessageHolder message;
+            DateHolder dataHolder;
             if (MessageInput == "p")
-                message = new MessageHolder { MessageType = "Picture", Message = File.ReadAllBytes(@"ServerPicture\SpaceChem.mp4") };
+                dataHolder = new DateHolder { Tag = "Picture", Data = File.ReadAllBytes(@"ServerPicture\SpaceChem.mp4") };
             else
-                message = new MessageHolder { MessageType = "Text", Message = text };
-            clientServer?.SendMessage(message);
+                dataHolder = new DateHolder { Tag = "Text", Data = text };
+            clientServer?.SendData(dataHolder);
             TextBoxWriteLine(text);
             MessageInput = "";
         }

@@ -4,13 +4,13 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Pen_and_paper_role_playing_tool
+namespace TCP_Framework
 {
     public class Server : IClientServer
     {
         private TcpListener listener;
         private TcpClient clientSocket;
-        public EventHandler<WriterEventArgs> Writer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Task EstablishConnection(int port)
         {
@@ -25,13 +25,13 @@ namespace Pen_and_paper_role_playing_tool
             return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
         }
 
-        public void SendMessage(MessageHolder message) => MessageHandler.SendMessage(clientSocket, message);
+        public void SendData(DateHolder dataHolder) => DataHandler.SendData(clientSocket, dataHolder);
 
-        public Task<MessageHolder> ReceiveMessage(CancellationToken token)
+        public Task<DateHolder> ReceiveData(CancellationToken token)
         {
             if (token.IsCancellationRequested || !clientSocket.Client.Connected)
                 return null;
-            var receiver = MessageHandler.ReceiveMessagesAsync(clientSocket, token);
+            var receiver = DataHandler.ReceiveDataAsync(clientSocket, token);
             return receiver;
         }
 
