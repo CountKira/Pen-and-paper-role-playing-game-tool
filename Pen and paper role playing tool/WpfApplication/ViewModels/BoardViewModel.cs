@@ -3,114 +3,72 @@ using System.Windows;
 using MVVM_Framework;
 using System.ComponentModel;
 using TCP_Framework;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Threading;
 
 namespace WpfApplication.ViewModel
 {
     internal class BoardViewModel : INotifyPropertyChanged
     {
+        private double left, top;
         private IClientServer clientServer;
-        public ICommand NewCircleCommand { get; set; }
-        public ObservableCollection<RectItem> RectItems { get; set; } = new ObservableCollection<RectItem>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public BoardViewModel(IClientServer clientServer)
         {
+            //if (clientServer is MultiServer)
+            //{
             this.clientServer = clientServer;
-            NewCircleCommand = new ActionCommand(CommandMethod);
-            RectItems.CollectionChanged += RectItems_CollectionChanged;
+            //}
         }
 
-        private void RectItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public double Left
         {
-            var nc = outstandingChanges.Find(nccea => e.Action == nccea.Action);
-            if (nc != null)
+            get => left;
+            set
             {
-                outstandingChanges.Remove(nc);
+                if (left != value)
+                {
+                    left = value;
+                    clientServer?.SendData(new DateHolder { Tag = "Position", Data = new Point(left, top) });
+                    OnPropertyChanged(nameof(Left));
+                }
             }
-            else
+        }
+
+        public double Top
+        {
+            get => top;
+            set
             {
-                var data = new CollectionChangedData() { Action = NotifyCollectionChangedAction.Add, NewItem = e.NewItems[0] as RectItem };
-                clientServer?.SendData(new DateHolder { Tag = $"{nameof(RectItems)}_changed", Data = data });
+                if (top != value)
+                {
+                    top = value;
+                    clientServer?.SendData(new DateHolder { Tag = "Position", Data = new Point(left, top) });
+                    OnPropertyChanged(nameof(Top));
+                }
             }
         }
 
-        internal void SetNewPosition(object dataContext, Point endposition)
+        public int SelectedElementIndex { get; internal set; }
+
+        public void ReceiveNewPosition(Point point)
         {
-            var rectItem = dataContext as RectItem;
-            rectItem.X = endposition.X;
-            rectItem.Y = endposition.Y;
-            var index = RectItems.IndexOf(rectItem);
-            clientServer?.SendData(new DateHolder { Tag = "RectItem_changed", Data = new RectItemChange { Index = index, RectItem = endposition } });
+            top = point.Y;
+            left = point.X;
+            OnPropertyChanged(nameof(Left));
+            OnPropertyChanged(nameof(Top));
         }
 
-        private void CommandMethod(object parameter)
-        {
-            RectItems.Add(new RectItem());
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        private List<CollectionChangedData> outstandingChanges = new List<CollectionChangedData>();
 
         internal void DataReception(object sender, DataReceivedEventArgs data)
         {
             var dataholder = data.Dataholder;
-            if (dataholder.Tag == $"{nameof(RectItems)}_changed")
+            if (dataholder.Tag == "Position")
             {
-                var changes = dataholder.Data as CollectionChangedData;
-                outstandingChanges.Add(changes);
-                switch (changes.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        var newItem = changes.NewItem as RectItem;
-                        Application.Current.Dispatcher.Invoke(delegate { RectItems.Add(newItem); });
-                        break;
-
-                    case NotifyCollectionChangedAction.Remove:
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                        break;
-
-                    case NotifyCollectionChangedAction.Move:
-                        break;
-
-                    case NotifyCollectionChangedAction.Reset:
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-            else if (dataholder.Tag == "RectItem_changed")
-            {
-                var rectItemChange = dataholder.Data as RectItemChange;
-                var oldRectItem = RectItems[rectItemChange.Index];
-                var newRectItem = rectItemChange.RectItem;
-                oldRectItem.X = newRectItem.X;
-                oldRectItem.Y = newRectItem.Y;
+                var point = (Point)dataholder.Data;
+                ReceiveNewPosition(point);
             }
         }
-    }
-
-    [Serializable]
-    internal class CollectionChangedData
-    {
-        public NotifyCollectionChangedAction Action;
-        public RectItem NewItem;
-    }
-
-    [Serializable]
-    internal class RectItemChange
-    {
-        public int Index { get; set; }
-        public Point RectItem { get; set; }
     }
 }

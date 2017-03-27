@@ -47,7 +47,7 @@ namespace TCP_Framework
                             serveritem.SendData(data);
                     DataReceivedEvent(this, new DataReceivedEventArgs(data));
                 }
-                catch (IOException)
+                catch (Exception)
                 {
                     //TODO: Have to check if this needs to be thread safe
                     DataReceivedEvent(this, new DataReceivedEventArgs(new DateHolder { Tag = "Text", Data = "Verbindung zu Client getrennt." }));

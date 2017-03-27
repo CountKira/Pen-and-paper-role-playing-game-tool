@@ -15,6 +15,20 @@ namespace WpfApplication
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+#if DEBUG
+            foreach (var arg in e.Args)
+            {
+                //TODO: Remove setting the culture with arguments after debug
+                try
+                {
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(arg);
+                }
+                catch (CultureNotFoundException cultureException)
+                {
+                    Debug.WriteLine(cultureException.Message);
+                }
+            }
+#endif
             IDialogService dialogService = new DialogService(MainWindow);
             RegisterViewModels(dialogService);
 

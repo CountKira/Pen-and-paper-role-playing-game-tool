@@ -21,34 +21,51 @@ namespace WpfApplication.Windows
             InitializeComponent();
         }
 
-        private FrameworkElement capturedElement;
+        private bool captured;
         private Point offset;
 
         private void Ellipse_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var element = sender as FrameworkElement;
-            Panel.SetZIndex(element, 1);
+            var index = frameworkElements.IndexOf(element);
+            BoardViewModel.SelectedElementIndex = index;
             offset = e.GetPosition(element);
             element.CaptureMouse();
-            capturedElement = element;
+            captured = true;
         }
 
         private void Ellipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
             var element = sender as FrameworkElement;
-            Panel.SetZIndex(element, 0);
             element.ReleaseMouseCapture();
-            capturedElement = null;
+            captured = false;
         }
 
         private void Ellipse_MouseMove(object sender, MouseEventArgs e)
         {
-            if (capturedElement == sender)
+            if (captured)
             {
+                var element = sender as FrameworkElement;
                 var position = e.GetPosition(this);
                 var endposition = Point.Subtract(position, (Vector)offset);
-                BoardViewModel.SetNewPosition(capturedElement.DataContext, endposition);
+                BoardViewModel.Left = endposition.X;
+                BoardViewModel.Top = endposition.Y;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var ellipse = new Ellipse()
+            {
+                Width = 30,
+                Height = 30,
+                Fill = System.Windows.Media.Brushes.Blue
+            };
+            ellipse.MouseDown += Ellipse_MouseDown;
+            ellipse.MouseUp += Ellipse_MouseUp;
+            ellipse.MouseMove += Ellipse_MouseMove;
+            canvas.Children.Add(ellipse);
+            frameworkElements.Add(ellipse);
         }
     }
 }
