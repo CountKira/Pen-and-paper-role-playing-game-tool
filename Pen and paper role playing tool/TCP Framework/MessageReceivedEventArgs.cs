@@ -4,9 +4,9 @@ namespace TCP_Framework
 {
     public class DataReceivedEventArgs : EventArgs
     {
-        public DateHolder Dataholder { get; }
+        public DataHolder Dataholder { get; }
 
-        public DataReceivedEventArgs(DateHolder dataholder)
+        public DataReceivedEventArgs(DataHolder dataholder)
         {
             Dataholder = dataholder;
         }

@@ -85,12 +85,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModels\BoardViewModel.cs" />
+    <Compile Include="LocationChangedData.cs" />
+    <Compile Include="TableElement.cs" />
     <Compile Include="ViewModels\IClientServerViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Windows\BoardWindow.xaml.cs">
-      <DependentUpon>BoardWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModels\TableViewModel.cs" />
     <Compile Include="Windows\ClientSetup.xaml.cs">
       <DependentUpon>ClientSetup.xaml</DependentUpon>
     </Compile>
@@ -99,10 +98,9 @@
       <DependentUpon>ServerSetup.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ServerSetupViewModel.cs" />
-    <Page Include="Windows\BoardWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Windows\TableWindow.xaml.cs">
+      <DependentUpon>TableWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Windows\ClientSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -120,6 +118,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\ServerSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

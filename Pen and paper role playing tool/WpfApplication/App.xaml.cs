@@ -15,20 +15,7 @@ namespace WpfApplication
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-#if DEBUG
-            foreach (var arg in e.Args)
-            {
-                //TODO: Remove setting the culture with arguments after debug
-                try
-                {
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(arg);
-                }
-                catch (CultureNotFoundException cultureException)
-                {
-                    Debug.WriteLine(cultureException.Message);
-                }
-            }
-#endif
+            DispatcherHelper.Initialize(this.Dispatcher);
             IDialogService dialogService = new DialogService(MainWindow);
             RegisterViewModels(dialogService);
 
@@ -42,7 +29,7 @@ namespace WpfApplication
         {
             dialogService.Register<ClientSetupViewModel, ClientSetup>();
             dialogService.Register<ServerSetupViewModel, ServerSetup>();
-            dialogService.Register<BoardViewModel, BoardWindow>();
+            dialogService.Register<TableViewModel, TableWindow>();
         }
     }
 }

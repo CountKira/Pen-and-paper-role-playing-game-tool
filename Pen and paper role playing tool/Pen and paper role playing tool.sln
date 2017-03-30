@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP Framework", "TCP Framew
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP Framework.Test", "TCP Framework.Test\TCP Framework.Test.csproj", "{D6520F05-863D-4C65-9BFD-DE488C2909A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication.Test", "WPFApplication.Test\WpfApplication.Test.csproj", "{155B1000-C9BF-4565-B2DF-C095CE20360C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{D6520F05-863D-4C65-9BFD-DE488C2909A0}.Release|x64.Build.0 = Release|Any CPU
 		{D6520F05-863D-4C65-9BFD-DE488C2909A0}.Release|x86.ActiveCfg = Release|Any CPU
 		{D6520F05-863D-4C65-9BFD-DE488C2909A0}.Release|x86.Build.0 = Release|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Debug|x64.Build.0 = Debug|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Debug|x86.Build.0 = Debug|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Release|x64.ActiveCfg = Release|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Release|x64.Build.0 = Release|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Release|x86.ActiveCfg = Release|Any CPU
+		{155B1000-C9BF-4565-B2DF-C095CE20360C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,6 +6,6 @@ namespace TCP_Framework
     {
         EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
 
-        void SendData(DateHolder dataholder);
+        void SendData(DataHolder dataholder);
     }
 }

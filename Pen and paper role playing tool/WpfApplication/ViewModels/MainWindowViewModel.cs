@@ -9,17 +9,17 @@ using System.Windows;
 
 namespace WpfApplication.ViewModel
 {
-    internal class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private IDialogService dialogService;
         private string chatName;
-        private IClientServer clientServer;
+        public IClientServer ClientServer { get; set; }
         private string messageOutput;
         private string messageInput;
-        public ICommand SendButton { get; set; }
-        public ICommand BoardButton { get; set; }
-        public ICommand ServerButton { get; set; }
-        public ICommand ClientButton { get; set; }
+        public ICommand SendMessageCommand { get; set; }
+        public ICommand OpenTableCommand { get; set; }
+        public ICommand SetupServerCommand { get; set; }
+        public ICommand SetupClientCommand { get; set; }
 
         public string MessageOutput
         {
@@ -38,31 +38,21 @@ namespace WpfApplication.ViewModel
         public MainWindowViewModel(IDialogService service)
         {
             dialogService = service;
-            SendButton = new ActionCommand(Send);
-            ServerButton = new ActionCommand(MenuServerItem);
-            ClientButton = new ActionCommand(MenuClientItem);
-            BoardButton = new ActionCommand(MenuBoardGameItem);
-        }
-
-        private void MenuBoardGameItem(object obj)
-        {
-            var boardViewModel = new BoardViewModel(clientServer);
-            if (clientServer != null)
-            {
-                clientServer.DataReceivedEvent += boardViewModel.DataReception;
-            }
-            dialogService.Show(boardViewModel);
+            SendMessageCommand = new ActionCommand(SendMessageMethod);
+            SetupServerCommand = new ActionCommand(SetupServerMethod);
+            SetupClientCommand = new ActionCommand(SetupClientMethod);
+            OpenTableCommand = new ActionCommand(OpenTableMethod);
         }
 
         //TODO: Handle the case that the server or client could not be initiated
-        private void MenuServerItem(object obj)
+        private void SetupServerMethod(object parameter)
         {
             var serverSetupViewModel = new ServerSetupViewModel();
             var result = dialogService.ShowDialog(serverSetupViewModel);
             SetupServerOrClient(serverSetupViewModel, result);
         }
 
-        private void MenuClientItem(object obj)
+        private void SetupClientMethod(object parameter)
         {
             var clientSetupViewModel = new ClientSetupViewModel();
             var result = dialogService.ShowDialog(clientSetupViewModel);
@@ -74,8 +64,8 @@ namespace WpfApplication.ViewModel
             if (result == true)
             {
                 TextBoxWriteLine(Connection_established);
-                clientServer = clientServerViewModel.ClientServer;
-                clientServer.DataReceivedEvent += (object sender, DataReceivedEventArgs data) =>
+                ClientServer = clientServerViewModel.ClientServer;
+                ClientServer.DataReceivedEvent += (object sender, DataReceivedEventArgs data) =>
                 {
                     if (data.Dataholder.Tag == "Picture")
                     {
@@ -91,22 +81,24 @@ namespace WpfApplication.ViewModel
             }
         }
 
-        private void Send(object obj)
+        private void SendMessageMethod(object parameter)
         {
             var text = $"{chatName}: {MessageInput}";
 
-            DateHolder dataHolder;
-            if (MessageInput == "p")
-                dataHolder = new DateHolder { Tag = "Picture", Data = File.ReadAllBytes(@"ServerPicture\SpaceChem.mp4") };
-            else
-                dataHolder = new DateHolder { Tag = "Text", Data = text };
-            clientServer?.SendData(dataHolder);
+            DataHolder dataHolder = new DataHolder { Tag = "Text", Data = text };
+            ClientServer?.SendData(dataHolder);
             TextBoxWriteLine(text);
             MessageInput = "";
         }
 
-        private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
         private void TextBoxWriteLine(string message) => MessageOutput += $"{message}{Environment.NewLine}";
+
+        private void OpenTableMethod(object parameter)
+        {
+            var tableViewModel = new TableViewModel(ClientServer);
+            dialogService.Show(tableViewModel);
+        }
+
+        private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

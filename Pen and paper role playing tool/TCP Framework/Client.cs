@@ -45,13 +45,13 @@ namespace TCP_Framework
                 }
                 catch (IOException)
                 {
-                    DataReceivedEvent(this, new DataReceivedEventArgs(new DateHolder { Tag = "Text", Data = "Verbindung zum Server getrennt." }));
+                    DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Text", Data = "Verbindung zum Server getrennt." }));
                     return;
                 }
             }
         }
 
-        public void SendData(DateHolder dataholder) => DataHandler.SendData(client, dataholder);
+        public void SendData(DataHolder dataholder) => DataHandler.SendData(client, dataholder);
 
         #region IDisposable Support
 

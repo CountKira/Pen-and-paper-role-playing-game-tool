@@ -54,6 +54,7 @@
     <Compile Include="ActionCommand.cs" />
     <Compile Include="DialogCloseRequestedEventArgs.cs" />
     <Compile Include="DialogService.cs" />
+    <Compile Include="DispatcherHelper.cs" />
     <Compile Include="IDialog.cs" />
     <Compile Include="IDialogRequestClose.cs" />
     <Compile Include="IDialogService.cs" />

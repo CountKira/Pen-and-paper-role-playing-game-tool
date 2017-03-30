@@ -9,13 +9,13 @@ namespace TCP_Framework
     {
         private const int intByteSize = 4;
 
-        public static async Task<DateHolder> ReceiveDataAsync(TcpClient client, CancellationToken token)
+        public static async Task<DataHolder> ReceiveDataAsync(TcpClient client, CancellationToken token)
         {
             var networkStream = client.GetStream();
             token.Register(() => networkStream.Close());
             var SizeLength = await ReceiveDataLengthAsync(networkStream, token);
             var inStream = await ReceiveDataBytesAsync(networkStream, SizeLength, token);
-            var data = Serializer.Deserialize<DateHolder>(inStream);
+            var data = Serializer.Deserialize<DataHolder>(inStream);
             return data;
         }
 
@@ -39,7 +39,7 @@ namespace TCP_Framework
             return inStream;
         }
 
-        public static void SendData(TcpClient client, DateHolder dataholder)
+        public static void SendData(TcpClient client, DataHolder dataholder)
         {
             var serializedData = Serializer.Serialize(dataholder);
             var networkStream = client.GetStream();

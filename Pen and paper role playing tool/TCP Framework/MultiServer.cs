@@ -47,17 +47,17 @@ namespace TCP_Framework
                             serveritem.SendData(data);
                     DataReceivedEvent(this, new DataReceivedEventArgs(data));
                 }
-                catch (Exception)
+                catch (IOException)
                 {
                     //TODO: Have to check if this needs to be thread safe
-                    DataReceivedEvent(this, new DataReceivedEventArgs(new DateHolder { Tag = "Text", Data = "Verbindung zu Client getrennt." }));
+                    DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Text", Data = "Verbindung zu Client getrennt." }));
                     servers.Remove(server);
                     return;
                 }
             };
         }
 
-        public void SendData(DateHolder dataholder)
+        public void SendData(DataHolder dataholder)
         {
             foreach (var server in servers)
                 server.SendData(dataholder);

@@ -25,9 +25,9 @@ namespace TCP_Framework
             return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
         }
 
-        public void SendData(DateHolder dataHolder) => DataHandler.SendData(clientSocket, dataHolder);
+        public void SendData(DataHolder dataHolder) => DataHandler.SendData(clientSocket, dataHolder);
 
-        public Task<DateHolder> ReceiveData(CancellationToken token)
+        public Task<DataHolder> ReceiveData(CancellationToken token)
         {
             if (token.IsCancellationRequested || !clientSocket.Client.Connected)
                 return null;
