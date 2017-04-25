@@ -81,9 +81,9 @@ namespace WpfApplication.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Chat.
         /// </summary>
-        public static string Chat_window {
+        public static string Chat_window_title {
             get {
-                return ResourceManager.GetString("Chat_window", resourceCulture);
+                return ResourceManager.GetString("Chat_window_title", resourceCulture);
             }
         }
         
@@ -192,6 +192,69 @@ namespace WpfApplication.Properties {
         public static string Server_setup_window {
             get {
                 return ResourceManager.GetString("Server_setup_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Table.
+        /// </summary>
+        public static string TableWindow_title {
+            get {
+                return ResourceManager.GetString("TableWindow_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Change Background.
+        /// </summary>
+        public static string Window_Change_background {
+            get {
+                return ResourceManager.GetString("Window_Change_background", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Chat.
+        /// </summary>
+        public static string Window_Chat {
+            get {
+                return ResourceManager.GetString("Window_Chat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Client.
+        /// </summary>
+        public static string Window_Client {
+            get {
+                return ResourceManager.GetString("Window_Client", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open _Table.
+        /// </summary>
+        public static string Window_Open_Table {
+            get {
+                return ResourceManager.GetString("Window_Open_Table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Server.
+        /// </summary>
+        public static string Window_Server {
+            get {
+                return ResourceManager.GetString("Window_Server", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _View.
+        /// </summary>
+        public static string Window_View {
+            get {
+                return ResourceManager.GetString("Window_View", resourceCulture);
             }
         }
     }

@@ -3,29 +3,62 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApplication.Windows"
+        xmlns:p = "clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="TableWindow" Height="300" Width="300">
-    <Canvas>
-        <Button Canvas.Bottom="0" Canvas.Right="0" Command="{Binding NewCircleCommand}" Content="New Ellipse" Padding="3" />
-        <ItemsControl ItemsSource="{Binding TableElements}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemContainerStyle>
-                <Style TargetType="ContentPresenter">
-                    <Setter Property="Canvas.Left" Value="{Binding X}" />
-                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                </Style>
-            </ItemsControl.ItemContainerStyle>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Ellipse Width="30" Height="30" Fill="Blue" Stroke="Black" StrokeThickness="2"
-                               MouseMove="Ellipse_MouseMove" MouseDown="Ellipse_MouseDown" MouseUp="Ellipse_MouseUp" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </Canvas>
+        Title="{x:Static p:Resources.TableWindow_title}" Height="300" Width="300">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="{x:Static p:Resources.Window_View}">
+                <MenuItem Header="{x:Static p:Resources.Window_Change_background}" Command="{Binding ChangeBackgroundCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Canvas>
+            <Canvas.Background>
+                <ImageBrush ImageSource="{Binding BackgroundImageUrl}"/>
+            </Canvas.Background>
+            <Canvas.ContextMenu>
+                <ContextMenu ItemsSource ="{Binding Actions}">
+                    <ContextMenu.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding Name}" />
+                            <Setter Property="Command" Value="{Binding Action}" />
+                        </Style>
+                    </ContextMenu.ItemContainerStyle>
+                </ContextMenu>
+            </Canvas.ContextMenu>
+            <ItemsControl ItemsSource="{Binding TableElements}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Width="{Binding Size}" Height="{Binding Size}" Stroke="Black" StrokeThickness="2"
+                             MouseMove="Ellipse_MouseMove" MouseDown="Ellipse_MouseDown" MouseUp="Ellipse_MouseUp">
+                            <Ellipse.ContextMenu>
+                                <ContextMenu ItemsSource ="{Binding Actions}">
+                                    <ContextMenu.ItemContainerStyle>
+                                        <Style TargetType="MenuItem">
+                                            <Setter Property="Header" Value="{Binding Name}" />
+                                            <Setter Property="Command" Value="{Binding Action}"/>
+                                        </Style>
+                                    </ContextMenu.ItemContainerStyle>
+                                </ContextMenu>
+                            </Ellipse.ContextMenu>
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ImageUrl}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Canvas>
+    </DockPanel>
 </Window>
