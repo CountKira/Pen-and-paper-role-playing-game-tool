@@ -86,18 +86,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="LocationChangedData.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TableElement.cs" />
-    <Compile Include="ViewModels\IClientServerViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\TableViewModel.cs" />
+    <Compile Include="ViewModel\IClientServerViewModel.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\TableViewModel.cs" />
     <Compile Include="Windows\ClientSetup.xaml.cs">
       <DependentUpon>ClientSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ClientSetupViewModel.cs" />
+    <Compile Include="ViewModel\ClientSetupViewModel.cs" />
     <Compile Include="Windows\ServerSetup.xaml.cs">
       <DependentUpon>ServerSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ServerSetupViewModel.cs" />
+    <Compile Include="ViewModel\ServerSetupViewModel.cs" />
     <Compile Include="Windows\TableWindow.xaml.cs">
       <DependentUpon>TableWindow.xaml</DependentUpon>
     </Compile>

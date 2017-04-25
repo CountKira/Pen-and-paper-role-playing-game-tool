@@ -5,13 +5,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 using static WpfApplication.Properties.Resources;
-using System.Windows;
 
 namespace WpfApplication.ViewModel
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private IDialogService dialogService;
+        private readonly IDialogService dialogService;
         private string chatName;
         public IClientServer ClientServer { get; set; }
         private string messageOutput;
@@ -61,31 +60,32 @@ namespace WpfApplication.ViewModel
 
         private void SetupServerOrClient(IClientServerViewModel clientServerViewModel, bool? result)
         {
-            if (result == true)
+            if (result != true) return;
+            TextBoxWriteLine(Connection_established);
+            ClientServer = clientServerViewModel.ClientServer;
+            ClientServer.DataReceivedEvent += (sender, data) =>
             {
-                TextBoxWriteLine(Connection_established);
-                ClientServer = clientServerViewModel.ClientServer;
-                ClientServer.DataReceivedEvent += (object sender, DataReceivedEventArgs data) =>
+                switch (data.Dataholder.Data)
                 {
-                    if (data.Dataholder.Tag == "Picture")
-                    {
-                        var bytes = data.Dataholder.Data as byte[];
+                    case byte[] bytes:
                         File.WriteAllBytes(@"ClientPicture\SpaceChem.mp4", bytes);
-                    }
-                    else if (data.Dataholder.Tag == "Text")
-                    {
-                        TextBoxWriteLine((string)data.Dataholder.Data);
-                    }
-                };
-                chatName = clientServerViewModel.ChatName;
-            }
+                        break;
+                    case string text:
+                        TextBoxWriteLine(text);
+                        break;
+                    case IOException _:
+                        TextBoxWriteLine("Verbindung zum Client getrennt");
+                        break;
+                }
+            };
+            chatName = clientServerViewModel.ChatName;
         }
 
         private void SendMessageMethod(object parameter)
         {
             var text = $"{chatName}: {MessageInput}";
 
-            DataHolder dataHolder = new DataHolder { Tag = "Text", Data = text };
+            var dataHolder = new DataHolder { Tag = "Text", Data = text };
             ClientServer?.SendData(dataHolder);
             TextBoxWriteLine(text);
             MessageInput = "";

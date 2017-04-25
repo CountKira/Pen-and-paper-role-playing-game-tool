@@ -1,21 +1,22 @@
-﻿using Moq;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Windows;
+using Moq;
+using NUnit.Framework;
 using TCP_Framework;
+using WpfApplication.ViewModel;
 
-namespace WpfApplication.ViewModel.Test
+namespace WpfApplication.Test.ViewModel
 {
     [TestFixture]
     internal class TableViewModelTest
     {
-        private const string addCircleTag = "Add Circle";
-        private const string tag_TableElementLocationChanged = "TableElementLocation changed";
+        private const string AddCircleTag = "Add Circle";
+        private const string TagTableElementLocationChanged = "TableElementLocation changed";
         private Mock<IClientServer> mock;
         private TableViewModel tableViewModel;
         private DataHolder dataHolder;
 
-        public void SetupWithMock()
+        private void SetupWithMock()
         {
             mock = new Mock<IClientServer>();
             mock.Setup(cs => cs.SendData(It.IsAny<DataHolder>())).Callback<DataHolder>(dh => dataHolder = dh);
@@ -36,10 +37,10 @@ namespace WpfApplication.ViewModel.Test
             //Act
             tableViewModel.NewCircleCommand.Execute(null);
             //Assert
-            int tableElementsCount = tableViewModel.TableElements.Count;
+            var tableElementsCount = tableViewModel.TableElements.Count;
             Assert.AreEqual(1, tableElementsCount);
             mock.Verify(cs => cs.SendData(It.IsAny<DataHolder>()), Times.Once);
-            Assert.AreEqual(addCircleTag, dataHolder.Tag);
+            Assert.AreEqual(AddCircleTag, dataHolder.Tag);
             Assert.AreEqual(new TableElement(), dataHolder.Data);
         }
 
@@ -49,7 +50,7 @@ namespace WpfApplication.ViewModel.Test
             //Arrange
             tableViewModel = new TableViewModel(null);
             var tableElement = new TableElement();
-            var sentData = new DataHolder { Tag = addCircleTag, Data = tableElement };
+            var sentData = new DataHolder { Tag = AddCircleTag, Data = tableElement };
             //Act
             tableViewModel.DataReception(null, new DataReceivedEventArgs(sentData));
             //Assert
@@ -81,8 +82,8 @@ namespace WpfApplication.ViewModel.Test
             //Act
             tableViewModel.SetTableElementPosition(new Point { X = 4, Y = 3 }, tableElement);
             //Assert
-            Assert.AreEqual(tag_TableElementLocationChanged, dataHolder.Tag);
-            var data = dataHolder.Data as LocationChangedData;
+            Assert.AreEqual(TagTableElementLocationChanged, dataHolder.Tag);
+            var data = dataHolder.Data as LocationChangedData??throw new NullReferenceException();
             Assert.AreEqual(4, data.X);
             Assert.AreEqual(3, data.Y);
             Assert.AreEqual(0, data.Index);
@@ -94,13 +95,13 @@ namespace WpfApplication.ViewModel.Test
             //Arrange
             tableViewModel = new TableViewModel(null);
             var locationChangedData = new LocationChangedData { X = 3, Y = 4, Index = 1 };
-            var sentData = new DataHolder { Tag = tag_TableElementLocationChanged, Data = locationChangedData };
+            var sentData = new DataHolder { Tag = TagTableElementLocationChanged, Data = locationChangedData };
             tableViewModel.TableElements.Add(new TableElement());
             tableViewModel.TableElements.Add(new TableElement());
             //Act
             tableViewModel.DataReception(null, new DataReceivedEventArgs(sentData));
             //Assert
-            TableElement tableElement = tableViewModel.TableElements[1];
+            var tableElement = tableViewModel.TableElements[1];
             Assert.AreEqual(locationChangedData.X, tableElement.X);
             Assert.AreEqual(locationChangedData.Y, tableElement.Y);
         }

@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace WpfApplication.ViewModel
 {
-    internal class ServerSetupViewModel : INotifyPropertyChanged, IDialogRequestClose, IClientServerViewModel
+    internal class ServerSetupViewModel : INotifyPropertyChanged, IClientServerViewModel
     {
         public IClientServer ClientServer { get; set; }
         private string chatName;
@@ -35,7 +35,7 @@ namespace WpfApplication.ViewModel
             var addresses = Dns.GetHostAddresses(Dns.GetHostName());
             var stringBuilder = new StringBuilder();
             foreach (var address in addresses)
-                stringBuilder.Append(address.ToString()).Append(Environment.NewLine);
+                stringBuilder.Append(address).Append(Environment.NewLine);
             ipAddresses = stringBuilder.ToString();
 #if DEBUG
             ChatName = "Sarah";

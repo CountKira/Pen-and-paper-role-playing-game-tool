@@ -28,27 +28,21 @@ namespace MVVM_Framework
 
         public bool? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : IDialogRequestClose
         {
-            Type viewType = Mappings[typeof(TViewModel)];
+            var viewType = Mappings[typeof(TViewModel)];
 
-            IDialog dialog = (IDialog)Activator.CreateInstance(viewType);
+            var dialog = (IDialog)Activator.CreateInstance(viewType);
 
-            EventHandler<DialogCloseRequestedEventArgs> handler = null;
-
-            handler = (sender, e) =>
+            void Handler(object sender, DialogCloseRequestedEventArgs e)
             {
-                viewModel.CloseRequested -= handler;
+                viewModel.CloseRequested -= Handler;
 
                 if (e.DialogResult.HasValue)
-                {
                     dialog.DialogResult = e.DialogResult;
-                }
                 else
-                {
                     dialog.Close();
-                }
-            };
+            }
 
-            viewModel.CloseRequested += handler;
+            viewModel.CloseRequested += Handler;
 
             dialog.DataContext = viewModel;
             dialog.Owner = owner;
@@ -58,9 +52,9 @@ namespace MVVM_Framework
 
         public void Show<TViewModel>(TViewModel viewModel)
         {
-            Type viewType = Mappings[typeof(TViewModel)];
+            var viewType = Mappings[typeof(TViewModel)];
 
-            IDialog dialog = (IDialog)Activator.CreateInstance(viewType);
+            var dialog = (IDialog)Activator.CreateInstance(viewType);
 
             dialog.DataContext = viewModel;
             dialog.Owner = owner;

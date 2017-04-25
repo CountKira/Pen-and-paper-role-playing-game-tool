@@ -7,9 +7,9 @@ namespace TCP_Framework
 {
     public class Client : IClientServer, IDisposable
     {
-        private TcpClient client = new TcpClient();
-        private int port;
-        private string address;
+        private readonly TcpClient client = new TcpClient();
+        private readonly int port;
+        private readonly string address;
 
         public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
 

@@ -15,7 +15,7 @@ namespace WpfApplication
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            DispatcherHelper.Initialize(this.Dispatcher);
+            DispatcherHelper.Initialize(Dispatcher);
             IDialogService dialogService = new DialogService(MainWindow);
             RegisterViewModels(dialogService);
 

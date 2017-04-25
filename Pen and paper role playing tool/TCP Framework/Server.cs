@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace TCP_Framework
 {
-    public class Server : IClientServer
+    public class Server : IServer
     {
-        private TcpListener listener;
+        public TcpListener Listener { get; set; }
         private TcpClient clientSocket;
-        public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
 
-        public Task EstablishConnection(int port)
+        public Task EstablishConnection(int port, CancellationToken cancellationToken)
         {
-            listener = new TcpListener(IPAddress.Any, port);
-            listener.Start();
-            return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
+            Listener = new TcpListener(IPAddress.Any, port);
+            Listener.Start();
+            return Task.Factory.StartNew(() => clientSocket = Listener.AcceptTcpClient(), cancellationToken);
         }
 
-        public Task EstablishConnection(Server server)
+        public Task EstablishConnection(IServer server, CancellationToken cancellationToken)
         {
-            var listener = server.listener;
-            return Task.Factory.StartNew(() => clientSocket = listener.AcceptTcpClient());
+            Listener = server.Listener;
+            return Task.Factory.StartNew(() => clientSocket = Listener.AcceptTcpClient(), cancellationToken);
         }
 
         public void SendData(DataHolder dataHolder) => DataHandler.SendData(clientSocket, dataHolder);
@@ -34,7 +34,5 @@ namespace TCP_Framework
             var receiver = DataHandler.ReceiveDataAsync(clientSocket, token);
             return receiver;
         }
-
-        public void StopServer() => listener.Stop();
     }
 }

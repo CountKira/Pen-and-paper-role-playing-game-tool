@@ -2,64 +2,75 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace TCP_Framework
 {
-    public class MultiServer : IClientServer
+    public class MultiServer : IClientServer, IDisposable
     {
-        private List<Server> servers = new List<Server>();
+        public SynchronizedCollection<IServer> Servers { get; } = new SynchronizedCollection<IServer>();
         public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
-        public int PortNumber;
-
+        private readonly int portNumber;
+        public bool Running { get; private set; } = true;
         public MultiServer(int portNumber)
         {
-            PortNumber = portNumber;
+            this.portNumber = portNumber;
             OpenNewServerAsync();
         }
 
-        async private void OpenNewServerAsync()
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        public void Dispose() => cancellationTokenSource.Cancel();
+
+        private async void OpenNewServerAsync()
         {
-            var token = new CancellationToken();
-            while (true)
+            while (!cancellationTokenSource.IsCancellationRequested)
             {
-                var server = new Server();
-                if (servers.Count > 0)
-                    await server.EstablishConnection(servers[0]);
+                var server = ServerFactory.GenerateServer();
+                var token = cancellationTokenSource.Token;
+                if (Servers.Count > 0)
+                    await server.EstablishConnection(Servers[0], token);
                 else
-                {
-                    await server.EstablishConnection(PortNumber);
-                }
-                new Thread(() => ReceiveDatasAsync(token, server)).Start();
-                servers.Add(server);
+                    await server.EstablishConnection(portNumber, token);
+                Servers.Add(server);
+                var newThread = new Thread(() => ReceiveDatasAsync(token, server));
+                newThread.Start();
             }
+            cancellationTokenSource.Cancel();
         }
 
-        private async void ReceiveDatasAsync(CancellationToken token, Server server)
+        public void AddServer(IServer server)
+        {
+            Servers.Add(server);
+            var token = new CancellationToken();
+            new Thread(() => ReceiveDatasAsync(token, server)).Start();
+        }
+        private async void ReceiveDatasAsync(CancellationToken token, IServer server)
         {
             while (true)
             {
                 try
                 {
                     var data = await server.ReceiveData(token);
-                    foreach (var serveritem in servers)
+                    foreach (var serveritem in Servers)
                         if (serveritem != server)
                             serveritem.SendData(data);
                     DataReceivedEvent(this, new DataReceivedEventArgs(data));
                 }
-                catch (IOException)
+                catch (IOException e)
                 {
-                    //TODO: Have to check if this needs to be thread safe
-                    DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Text", Data = "Verbindung zu Client getrennt." }));
-                    servers.Remove(server);
+                    lock (this)
+                    {
+                        DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Exception", Data = e }));
+                        Servers.Remove(server);
+                    }
                     return;
                 }
-            };
+            }
         }
 
         public void SendData(DataHolder dataholder)
         {
-            foreach (var server in servers)
+            foreach (var server in Servers)
                 server.SendData(dataholder);
         }
     }

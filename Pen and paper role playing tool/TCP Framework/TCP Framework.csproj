@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,12 +51,14 @@
     <Compile Include="Client.cs" />
     <Compile Include="DataHolder.cs" />
     <Compile Include="IClientServer.cs" />
+    <Compile Include="IServer.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="MultiServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TCP Framework.pfx" />

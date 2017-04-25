@@ -6,7 +6,8 @@ namespace WpfApplication
     [Serializable]
     public class TableElement : INotifyPropertyChanged, IEquatable<TableElement>
     {
-        private double x, y;
+        private double x;
+        private double y;
 
         public double X
         {
@@ -22,11 +23,14 @@ namespace WpfApplication
 
         private void Set(double value, ref double field, string propertyName)
         {
-            if (value != field)
-            {
-                field = value;
-                OnPropertyChanged(propertyName);
-            }
+            if (IsDoubleEqual(value, field)) return;
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
+
+        private static bool IsDoubleEqual(double value, double field)
+        {
+            return (Math.Abs(value - field) < 0.00001);
         }
 
         [field: NonSerialized]
@@ -36,8 +40,11 @@ namespace WpfApplication
 
         public override bool Equals(object obj) => Equals(obj as TableElement);
 
-        public bool Equals(TableElement other) => other != null && other.x == x && other.y == y;
+        public bool Equals(TableElement other) => other != null && IsDoubleEqual(other.x, x) && IsDoubleEqual(other.y, y);
 
-        public override int GetHashCode() => base.GetHashCode();
+        public override int GetHashCode()
+        {
+            return X.GetHashCode() + Y.GetHashCode();
+        }
     }
 }

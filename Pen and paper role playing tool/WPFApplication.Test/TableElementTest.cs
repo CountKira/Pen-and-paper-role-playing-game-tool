@@ -14,12 +14,12 @@ namespace WpfApplication.Test
         private void Setup()
         {
             tableElement = new TableElement();
-            void TableElement_PropertyChanged(object sender, PropertyChangedEventArgs e)
+            void TableElementPropertyChanged(object senderElement, PropertyChangedEventArgs eventArgs)
             {
-                this.sender = sender;
-                this.e = e;
+                sender = senderElement;
+                e = eventArgs;
             }
-            tableElement.PropertyChanged += TableElement_PropertyChanged;
+            tableElement.PropertyChanged += TableElementPropertyChanged;
         }
 
         [TearDown]
@@ -69,7 +69,7 @@ namespace WpfApplication.Test
         public void SettingY_AnyValue_SavesValue()
         {
             Setup();
-            var n = 4;
+            const int n = 4;
             tableElement.Y = n;
             Assert.AreEqual(n, tableElement.Y);
         }
@@ -78,7 +78,7 @@ namespace WpfApplication.Test
         public void SettingX_AnyValue_SavesValue()
         {
             Setup();
-            var n = 4;
+            const int n = 4;
             tableElement.X = n;
             Assert.AreEqual(n, tableElement.X);
         }
@@ -90,13 +90,13 @@ namespace WpfApplication.Test
             var tableElementA = new TableElement { X = 3, Y = 10 };
             var tableElementB = new TableElement { X = 3, Y = 10 };
             //Act
-            var EqualityAtoB = tableElementA.Equals(tableElementB);
-            var EqualityBtoA = tableElementA.Equals(tableElementB);
-            var EqualityAtoA = tableElementA.Equals(tableElementA);
+            var equalityAtoB = tableElementA.Equals(tableElementB);
+            var equalityBtoA = tableElementA.Equals(tableElementB);
+            var equalityAtoA = tableElementA.Equals(tableElementA);
             //Assert
-            Assert.AreEqual(true, EqualityAtoB);
-            Assert.AreEqual(true, EqualityBtoA);
-            Assert.AreEqual(true, EqualityAtoA);
+            Assert.AreEqual(true, equalityAtoB);
+            Assert.AreEqual(true, equalityBtoA);
+            Assert.AreEqual(true, equalityAtoA);
         }
 
         [Test]
@@ -106,13 +106,13 @@ namespace WpfApplication.Test
             var tableElementA = new TableElement { X = 4, Y = 10 };
             var tableElementB = new TableElement { X = 3, Y = 10 };
             //Act
-            var EqualityAtoB = tableElementA.Equals(tableElementB);
-            var EqualityBtoA = tableElementA.Equals(tableElementB);
-            var EqualityAtoA = tableElementA.Equals(tableElementA);
+            var equalityAtoB = tableElementA.Equals(tableElementB);
+            var equalityBtoA = tableElementA.Equals(tableElementB);
+            var equalityAtoA = tableElementA.Equals(tableElementA);
             //Assert
-            Assert.AreEqual(false, EqualityAtoB);
-            Assert.AreEqual(false, EqualityBtoA);
-            Assert.AreEqual(true, EqualityAtoA);
+            Assert.AreEqual(false, equalityAtoB);
+            Assert.AreEqual(false, equalityBtoA);
+            Assert.AreEqual(true, equalityAtoA);
         }
 
         [Test]

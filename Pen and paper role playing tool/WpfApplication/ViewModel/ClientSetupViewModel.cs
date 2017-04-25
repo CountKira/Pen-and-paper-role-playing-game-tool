@@ -9,7 +9,7 @@ using static WpfApplication.Properties.Resources;
 
 namespace WpfApplication.ViewModel
 {
-    internal class ClientSetupViewModel : INotifyPropertyChanged, IDialogRequestClose, IClientServerViewModel
+    internal class ClientSetupViewModel : INotifyPropertyChanged, IClientServerViewModel
     {
         public IClientServer ClientServer { get; set; }
         private string chatName;
@@ -20,7 +20,7 @@ namespace WpfApplication.ViewModel
             set { chatName = value; OnPropertyChanged(nameof(ChatName)); }
         }
 
-        public string ipAddressbox;
+        private string ipAddressbox;
 
         public string IpAddressbox
         {
@@ -34,12 +34,12 @@ namespace WpfApplication.ViewModel
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public ICommand Connect_Click { get; set; }
+        public ICommand ConnectClick { get; set; }
         public ICommand CancelClick { get; set; }
 
         public ClientSetupViewModel()
         {
-            Connect_Click = new ActionCommand(Connect_Click2);
+            ConnectClick = new ActionCommand(Connect_Click2);
             CancelClick = new ActionCommand(p => CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false)));
 #if DEBUG
             ChatName = "Bill";

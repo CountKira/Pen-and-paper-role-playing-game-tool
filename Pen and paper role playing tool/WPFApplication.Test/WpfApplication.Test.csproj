@@ -53,7 +53,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TableElementTest.cs" />
-    <Compile Include="TableViewModelTest.cs" />
+    <Compile Include="ViewModel\TableViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MVVM Framework\MVVM Framework.csproj">
@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Compile Include="MainWindowViewModelTest.cs" />
+    <Compile Include="ViewModel\MainWindowViewModelTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
