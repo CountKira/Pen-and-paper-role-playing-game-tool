@@ -5,17 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p = "clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.TableWindow_title}" Height="300" Width="300">
+        Title="{x:Static p:Resources.TableWindow_title}" Height="630" Width="720"
+        Name="TableViewWindowName">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="{x:Static p:Resources.Window_View}">
-                <MenuItem Header="{x:Static p:Resources.Window_Change_background}" Command="{Binding ChangeBackgroundCommand}"/>
+                <MenuItem Header="{x:Static p:Resources.Window_Change_background}" Command="{Binding ChangeBackgroundCommand}" />
             </MenuItem>
         </Menu>
-        <Canvas>
-            <Canvas.Background>
-                <ImageBrush ImageSource="{Binding BackgroundImageUrl}"/>
-            </Canvas.Background>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <Label Content="Zoom:" />
+            <Slider Name="Slider" Value="{Binding SizeValue}" Minimum="0" Maximum="2" Width="200" />
+        </StackPanel>
+        <Canvas Name="Canvas" ClipToBounds="True">
             <Canvas.ContextMenu>
                 <ContextMenu ItemsSource ="{Binding Actions}">
                     <ContextMenu.ItemContainerStyle>
@@ -26,6 +28,13 @@
                     </ContextMenu.ItemContainerStyle>
                 </ContextMenu>
             </Canvas.ContextMenu>
+            <Rectangle Width="{Binding BackgroundSize}" Height="{Binding BackgroundSize}">
+                <Rectangle.Fill>
+                    <ImageBrush AlignmentX="Left" AlignmentY="Top" ImageSource="{Binding BackgroundImageUrl}"
+                                Stretch="Uniform">
+                    </ImageBrush>
+                </Rectangle.Fill>
+            </Rectangle>
             <ItemsControl ItemsSource="{Binding TableElements}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -47,13 +56,14 @@
                                     <ContextMenu.ItemContainerStyle>
                                         <Style TargetType="MenuItem">
                                             <Setter Property="Header" Value="{Binding Name}" />
-                                            <Setter Property="Command" Value="{Binding Action}"/>
+                                            <Setter Property="Command" Value="{Binding Action}" />
+                                            <Setter Property="IsEnabled" Value="{Binding Enabled}" />
                                         </Style>
                                     </ContextMenu.ItemContainerStyle>
                                 </ContextMenu>
                             </Ellipse.ContextMenu>
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImageUrl}"/>
+                                <ImageBrush ImageSource="{Binding ImageUrl}" />
                             </Ellipse.Fill>
                         </Ellipse>
                     </DataTemplate>

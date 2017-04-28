@@ -1,10 +1,10 @@
 ﻿using MVVM_Framework;
-using TCP_Framework;
 using System;
 using System.ComponentModel;
 using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
+using TCP_Framework;
 using static WpfApplication.Properties.Resources;
 
 namespace WpfApplication.ViewModel

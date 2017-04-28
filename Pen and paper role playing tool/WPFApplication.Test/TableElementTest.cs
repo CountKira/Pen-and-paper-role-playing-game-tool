@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System.ComponentModel;
-using TCP_Framework;
 
 namespace WpfApplication.Test
 {
@@ -113,18 +112,6 @@ namespace WpfApplication.Test
             Assert.AreEqual(false, equalityAtoB);
             Assert.AreEqual(false, equalityBtoA);
             Assert.AreEqual(true, equalityAtoA);
-        }
-
-        [Test]
-        public void SerializeDeserialize()
-        {
-            //Arrange
-            Setup();
-            //Act
-            var bytes = Serializer.Serialize(tableElement);
-            var deserialized = Serializer.Deserialize<TableElement>(bytes);
-            //Assert
-            Assert.AreEqual(tableElement, deserialized);
         }
     }
 }

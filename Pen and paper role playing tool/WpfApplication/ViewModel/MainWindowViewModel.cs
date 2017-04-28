@@ -1,9 +1,10 @@
 ﻿using MVVM_Framework;
-using TCP_Framework;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
+using TCP_Framework;
+using WpfApplication.Annotations;
 using static WpfApplication.Properties.Resources;
 
 namespace WpfApplication.ViewModel
@@ -15,10 +16,18 @@ namespace WpfApplication.ViewModel
         public IClientServer ClientServer { get; set; }
         private string messageOutput;
         private string messageInput;
-        public ICommand SendMessageCommand { get; set; }
-        public ICommand OpenTableCommand { get; set; }
-        public ICommand SetupServerCommand { get; set; }
-        public ICommand SetupClientCommand { get; set; }
+        public ICommand SendMessageCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand OpenTableCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand SetupServerCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand SetupClientCommand { get; }
+
+        private readonly TableViewModel tableViewModel;
 
         public string MessageOutput
         {
@@ -41,6 +50,13 @@ namespace WpfApplication.ViewModel
             SetupServerCommand = new ActionCommand(SetupServerMethod);
             SetupClientCommand = new ActionCommand(SetupClientMethod);
             OpenTableCommand = new ActionCommand(OpenTableMethod);
+            tableViewModel = new TableViewModel();
+        }
+
+        private void SendData(string tag, object data)
+        {
+            Logger.Log($"MainWindowViewModel.SendData-> tag: {tag}, data: {data}");
+            ClientServer?.SendData(new DataHolder { Tag = tag, Data = data });
         }
 
         //TODO: Handle the case that the server or client could not be initiated
@@ -56,6 +72,7 @@ namespace WpfApplication.ViewModel
             var clientSetupViewModel = new ClientSetupViewModel();
             var result = dialogService.ShowDialog(clientSetupViewModel);
             SetupServerOrClient(clientSetupViewModel, result);
+            SendData("TableViewModelRequest", null);
         }
 
         private void SetupServerOrClient(IClientServerViewModel clientServerViewModel, bool? result)
@@ -63,30 +80,85 @@ namespace WpfApplication.ViewModel
             if (result != true) return;
             TextBoxWriteLine(Connection_established);
             ClientServer = clientServerViewModel.ClientServer;
+            tableViewModel.ClientServer = ClientServer;
             ClientServer.DataReceivedEvent += (sender, data) =>
             {
+                var tag = data.Dataholder.Tag;
+                Logger.Log($"MainWindowViewModel.SetupServerOrClient-> tag: {tag}, data: {data.Dataholder.Data}");
                 switch (data.Dataholder.Data)
                 {
-                    case byte[] bytes:
-                        File.WriteAllBytes(@"ClientPicture\SpaceChem.mp4", bytes);
-                        break;
                     case string text:
-                        TextBoxWriteLine(text);
+                        switch (tag)
+                        {
+                            case "BackgroundChanged":
+                                tableViewModel.ImageName = text;
+                                break;
+
+                            case "PictureRequest":
+                                SendPicture(text);
+                                break;
+
+                            default:
+                                TextBoxWriteLine(text);
+                                break;
+                        }
                         break;
+
                     case IOException _:
-                        TextBoxWriteLine("Verbindung zum Client getrennt");
+                        var x = tag == "Client" ? Connection_to_client_lost : Connection_to_server_lost;
+                        TextBoxWriteLine(x);
+                        break;
+
+                    case TableViewData tvm:
+                        tableViewModel.SetData(tvm);
+                        break;
+
+                    case null:
+                        if (tag == "TableViewModelRequest")
+                            SendData("TableViewModelResponse", tableViewModel.GetData());
+                        break;
+
+                    case TableElementData newTableElementData:
+                        tableViewModel.Add(newTableElementData);
+                        break;
+
+                    case TableElementPropertyChangedData tepcd:
+                        tableViewModel.ChangeTableElement(tepcd);
+                        break;
+
+                    case byte[] bytes:
+                        tableViewModel.ReceivePictureData(bytes);
+                        break;
+
+                    case TableElementPictureRequest tableElementPictureRequest:
+                        var pictureData = PictureHelper.GetPictureData(tableElementPictureRequest.PictureName);
+                        SendData("TableElementPictureResponse", new TableElementPictureResponse
+                        {
+                            PictureData = pictureData,
+                            Index = tableElementPictureRequest.Index,
+                            PictureName = tableElementPictureRequest.PictureName
+                        });
+                        break;
+
+                    case TableElementPictureResponse tableElementPictureResponse:
+                        tableViewModel.SetTableElementPicture(tableElementPictureResponse);
                         break;
                 }
             };
             chatName = clientServerViewModel.ChatName;
         }
 
+        private void SendPicture(string pictureName)
+        {
+            var pictureData = PictureHelper.GetPictureData(pictureName);
+            SendData("PictureResponse", pictureData);
+        }
+
         private void SendMessageMethod(object parameter)
         {
             var text = $"{chatName}: {MessageInput}";
 
-            var dataHolder = new DataHolder { Tag = "Text", Data = text };
-            ClientServer?.SendData(dataHolder);
+            SendData("Text", text);
             TextBoxWriteLine(text);
             MessageInput = "";
         }
@@ -95,7 +167,6 @@ namespace WpfApplication.ViewModel
 
         private void OpenTableMethod(object parameter)
         {
-            var tableViewModel = new TableViewModel(ClientServer);
             dialogService.Show(tableViewModel);
         }
 

@@ -178,9 +178,15 @@
     <value>_View</value>
   </data>
   <data name="Window_Change_background" xml:space="preserve">
-    <value>_Change Background</value>
+    <value>_Change BackgroundImageUrl</value>
   </data>
   <data name="TableWindow_title" xml:space="preserve">
     <value>Table</value>
+  </data>
+  <data name="Connection_to_client_lost" xml:space="preserve">
+    <value>Connection to client lost.</value>
+  </data>
+  <data name="Connection_to_server_lost" xml:space="preserve">
+    <value>Connection to server lost.</value>
   </data>
 </root>

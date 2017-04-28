@@ -7,16 +7,16 @@
 		mc:Ignorable="d"
 		Title="{x:Static p:Resources.Client_setup_window}"
 		SizeToContent="WidthAndHeight" ResizeMode="NoResize">
-	<StackPanel FocusManager.FocusedElement="{Binding ElementName=IpAddressBox}">
-		<StackPanel Orientation="Horizontal" Margin="10">
-			<Label Content="{x:Static p:Resources.Server_IP}" />
-			<TextBox Name="IpAddressBox" Text="{Binding IpAddressbox, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-		</StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<Label Content="{x:Static p:Resources.Chat_name}" />
-			<TextBox Text="{Binding ChatName, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-		</StackPanel>
-		<Button Command="{Binding ConnectClick}"	Margin="10" IsDefault="True"	Content="{x:Static p:Resources.Connect}" />
-		<Button Command="{Binding CancelClick}"		Margin="10"	IsCancel="True"		Content="{x:Static p:Resources.Cancel}" />
-	</StackPanel>
+    <StackPanel FocusManager.FocusedElement="{Binding ElementName=IpAddressBox}">
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Label Content="{x:Static p:Resources.Server_IP}" />
+            <TextBox Name="IpAddressBox" Text="{Binding IpAddressbox, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="{x:Static p:Resources.Chat_name}" />
+            <TextBox Text="{Binding ChatName, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+        </StackPanel>
+        <Button Command="{Binding ConnectClick}"	Margin="10" IsDefault="True"	Content="{x:Static p:Resources.Connect}" />
+        <Button Command="{Binding CancelClick}"		Margin="10"	IsCancel="True"		Content="{x:Static p:Resources.Cancel}" />
+    </StackPanel>
 </Window>

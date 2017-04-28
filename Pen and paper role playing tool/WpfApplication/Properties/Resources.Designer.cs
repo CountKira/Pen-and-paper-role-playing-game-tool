@@ -124,6 +124,24 @@ namespace WpfApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection to client lost..
+        /// </summary>
+        public static string Connection_to_client_lost {
+            get {
+                return ResourceManager.GetString("Connection_to_client_lost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection to server lost..
+        /// </summary>
+        public static string Connection_to_server_lost {
+            get {
+                return ResourceManager.GetString("Connection_to_server_lost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not establish a connection with the server..
         /// </summary>
         public static string Could_not_establish_a_connection_with_the_server {
@@ -205,7 +223,7 @@ namespace WpfApplication.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Change Background.
+        ///   Looks up a localized string similar to _Change BackgroundImageUrl.
         /// </summary>
         public static string Window_Change_background {
             get {

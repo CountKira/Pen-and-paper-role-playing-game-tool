@@ -43,9 +43,9 @@ namespace TCP_Framework
                     var data = await DataHandler.ReceiveDataAsync(client, cancellationToken);
                     DataReceivedEvent(this, new DataReceivedEventArgs(data));
                 }
-                catch (IOException)
+                catch (IOException e)
                 {
-                    DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Text", Data = "Verbindung zum Server getrennt." }));
+                    DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Client", Data = e }));
                     return;
                 }
             }

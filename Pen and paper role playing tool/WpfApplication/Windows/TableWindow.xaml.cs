@@ -28,19 +28,17 @@ namespace WpfApplication.Windows
 
         private void Ellipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var element = sender as FrameworkElement;
-            element?.ReleaseMouseCapture();
+            capturedElement?.ReleaseMouseCapture();
             capturedElement = null;
         }
 
         private void Ellipse_MouseMove(object sender, MouseEventArgs e)
         {
             if (!ReferenceEquals(capturedElement, sender)) return;
-            var position = e.GetPosition(this);
+            var position = e.GetPosition(Canvas);
             var endposition = Point.Subtract(position, (Vector)offset);
             var tableElement = capturedElement.DataContext as TableElement;
-            var dataContext = DataContext as TableViewModel;
-            dataContext?.SetTableElementPosition(endposition, tableElement);
+            TableViewModel.SetTableElementPosition(endposition, tableElement);
         }
     }
 }

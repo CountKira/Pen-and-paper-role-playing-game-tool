@@ -1,7 +1,4 @@
 ﻿using MVVM_Framework;
-using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
 using System.Windows;
 using WpfApplication.ViewModel;
 using WpfApplication.Windows;

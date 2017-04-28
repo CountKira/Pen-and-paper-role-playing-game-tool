@@ -11,6 +11,7 @@ namespace TCP_Framework
         public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
         private readonly int portNumber;
         public bool Running { get; private set; } = true;
+
         public MultiServer(int portNumber)
         {
             this.portNumber = portNumber;
@@ -44,6 +45,7 @@ namespace TCP_Framework
             var token = new CancellationToken();
             new Thread(() => ReceiveDatasAsync(token, server)).Start();
         }
+
         private async void ReceiveDatasAsync(CancellationToken token, IServer server)
         {
             while (true)
@@ -60,7 +62,7 @@ namespace TCP_Framework
                 {
                     lock (this)
                     {
-                        DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Exception", Data = e }));
+                        DataReceivedEvent(this, new DataReceivedEventArgs(new DataHolder { Tag = "Server", Data = e }));
                         Servers.Remove(server);
                     }
                     return;

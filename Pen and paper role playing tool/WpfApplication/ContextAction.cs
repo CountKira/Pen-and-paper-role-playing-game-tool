@@ -20,7 +20,21 @@ namespace WpfApplication
             }
         }
 
+        private bool enabled = true;
+
+        public bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (value == enabled) return;
+                enabled = value;
+                OnPropertyChanged(nameof(Enabled));
+            }
+        }
+
         public ICommand Action { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

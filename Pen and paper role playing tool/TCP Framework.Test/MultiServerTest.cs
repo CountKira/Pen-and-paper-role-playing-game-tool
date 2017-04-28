@@ -1,24 +1,27 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 
 namespace TCP_Framework.Test
 {
     internal class ServerMock : IServer
     {
         public EventHandler<DataReceivedEventArgs> DataReceivedEvent { get; set; }
+
         public void SendData(DataHolder dataholder)
         {
             SendDataTimesCalled++;
             Dataholder = dataholder;
             WaitForTaskToFinish.Set();
         }
+
         public bool ReceiveDataThrowsIoException { private get; set; }
         public int SendDataTimesCalled { get; private set; }
+
         public Task<DataHolder> ReceiveData(CancellationToken token)
         {
             WaitForTaskToFinish.Set();
@@ -40,14 +43,17 @@ namespace TCP_Framework.Test
         public AutoResetEvent WaitForTaskToFinish { get; } = new AutoResetEvent(false);
         public DataHolder Dataholder { get; private set; }
         public TcpListener Listener { get; } = new TcpListener(new IPEndPoint(IPAddress.Any, 8888));
+
         public Task EstablishConnection(IServer server, CancellationToken cancellationToken)
         {
             return EstablishConnection(cancellationToken);
         }
+
         public Task EstablishConnection(int portNumber, CancellationToken cancellationToken)
         {
             return EstablishConnection(cancellationToken);
         }
+
         private Task EstablishConnection(CancellationToken cancellationToken)
         {
             return new TaskFactory().StartNew(() =>
@@ -56,6 +62,7 @@ namespace TCP_Framework.Test
             }, cancellationToken);
         }
     }
+
     [TestFixture]
     internal class MultiServerTest
     {
@@ -68,6 +75,7 @@ namespace TCP_Framework.Test
             ServerFactory.Server = serverMock;
             multiServer = new MultiServer(8888);
         }
+
         [Test]
         public void SendData()
         {
@@ -81,6 +89,7 @@ namespace TCP_Framework.Test
             Assert.AreEqual(1, serverMock.SendDataTimesCalled);
             Assert.AreEqual(data, serverMock.Dataholder);
         }
+
         [Test]
         public void ReceiveDataAsync_DataReveivedEventIsCalledAndOnlyAnotherServerSendsData()
         {
@@ -104,6 +113,7 @@ namespace TCP_Framework.Test
             Assert.AreEqual(0, serverMock.SendDataTimesCalled);
             Assert.IsTrue(called);
         }
+
         [Test]
         public void ReceiveDataAsync_ServerThrowsException()
         {

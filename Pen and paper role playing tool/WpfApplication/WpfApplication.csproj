@@ -89,12 +89,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ContextAction.cs" />
-    <Compile Include="LocationChangedData.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TableElement.cs" />
     <Compile Include="ViewModel\IClientServerViewModel.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="ViewModel\PictureChanger.cs" />
+    <Compile Include="PictureHelper.cs" />
+    <Compile Include="TableElementData.cs" />
+    <Compile Include="TableElementPropertyChangedData.cs" />
+    <Compile Include="TableViewData.cs" />
+    <Compile Include="TableElementPictureResponse.cs" />
+    <Compile Include="ViewModel\TableElementPictureRequest.cs" />
     <Compile Include="ViewModel\TableViewModel.cs" />
     <Compile Include="Windows\ClientSetup.xaml.cs">
       <DependentUpon>ClientSetup.xaml</DependentUpon>

@@ -183,4 +183,10 @@
   <data name="TableWindow_title" xml:space="preserve">
     <value>Tisch</value>
   </data>
+  <data name="Connection_to_client_lost" xml:space="preserve">
+    <value>Verbindung zum Client wurde getrennt.</value>
+  </data>
+  <data name="Connection_to_server_lost" xml:space="preserve">
+    <value>Verbindung zum Server wurde getrennt.</value>
+  </data>
 </root>
