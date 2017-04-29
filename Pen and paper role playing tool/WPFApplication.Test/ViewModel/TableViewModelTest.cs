@@ -48,7 +48,7 @@ namespace WpfApplication.Test.ViewModel
             tableViewModel.NewTableElementCommand.Execute(null);
             var tableElement = tableViewModel.TableElements[0];
             //Act
-            TableViewModel.SetTableElementPosition(new Point { X = 4, Y = 3 }, tableElement);
+            tableViewModel.SetTableElementPosition(new Point { X = 4, Y = 3 }, tableElement);
             //Assert
             var actualTableElement = tableViewModel.TableElements[0];
             Assert.AreEqual(4, actualTableElement.X);

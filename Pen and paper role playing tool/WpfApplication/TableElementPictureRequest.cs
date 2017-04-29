@@ -1,6 +1,6 @@
 using System;
 
-namespace WpfApplication.ViewModel
+namespace WpfApplication
 {
     [Serializable]
     internal class TableElementPictureRequest

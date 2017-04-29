@@ -2,9 +2,12 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using TCP_Framework;
 using WpfApplication.Annotations;
+using System.Text.RegularExpressions;
 using static WpfApplication.Properties.Resources;
 
 namespace WpfApplication.ViewModel
@@ -13,7 +16,7 @@ namespace WpfApplication.ViewModel
     {
         private readonly IDialogService dialogService;
         private string chatName;
-        public IClientServer ClientServer { get; set; }
+        public IClientServer ClientServer { private get; set; }
         private string messageOutput;
         private string messageInput;
         public ICommand SendMessageCommand { get; }
@@ -55,7 +58,6 @@ namespace WpfApplication.ViewModel
 
         private void SendData(string tag, object data)
         {
-            Logger.Log($"MainWindowViewModel.SendData-> tag: {tag}, data: {data}");
             ClientServer?.SendData(new DataHolder { Tag = tag, Data = data });
         }
 
@@ -84,7 +86,6 @@ namespace WpfApplication.ViewModel
             ClientServer.DataReceivedEvent += (sender, data) =>
             {
                 var tag = data.Dataholder.Tag;
-                Logger.Log($"MainWindowViewModel.SetupServerOrClient-> tag: {tag}, data: {data.Dataholder.Data}");
                 switch (data.Dataholder.Data)
                 {
                     case string text:
@@ -105,8 +106,8 @@ namespace WpfApplication.ViewModel
                         break;
 
                     case IOException _:
-                        var x = tag == "Client" ? Connection_to_client_lost : Connection_to_server_lost;
-                        TextBoxWriteLine(x);
+                        var message = tag == "Client" ? Connection_to_client_lost : Connection_to_server_lost;
+                        TextBoxWriteLine(message);
                         break;
 
                     case TableViewData tvm:
@@ -156,11 +157,38 @@ namespace WpfApplication.ViewModel
 
         private void SendMessageMethod(object parameter)
         {
-            var text = $"{chatName}: {MessageInput}";
-
+            const string diceCommand = @"^(?<quantity>\d+)\s*d\s*(?<sides>\d+)\s*(?<modifier>\+\d*)?";
+            var regex = new Regex(diceCommand);
+            var match = regex.Match(MessageInput);
+            var messageText = match.Success ? RollDiceAndConvertToString(match) : MessageInput;
+            var text = $"{chatName}: {messageText}";
             SendData("Text", text);
             TextBoxWriteLine(text);
             MessageInput = "";
+        }
+
+        private static string RollDiceAndConvertToString(Match match)
+        {
+            var sides = int.Parse(match.Groups["sides"].Value);
+            var quantity = int.Parse(match.Groups["quantity"].Value);
+            var modifierGroup = match.Groups["modifier"];
+            int? modifier = null;
+            if (modifierGroup.Success)
+                modifier = int.Parse(match.Groups["modifier"].Value);
+            var dices = Dice.Throw(quantity, sides);
+            var builder = new StringBuilder();
+            foreach (var dice in dices)
+            {
+                builder.Append($"{dice}+");
+            }
+            builder.Remove(builder.Length - 1, 1);
+            string modifierText = "";
+            if (modifier != null)
+            {
+                var sign = modifier >= 0 ? "+" : "";
+                modifierText = $"{sign}{modifier}";
+            }
+            return $"{quantity}d{sides} = ({builder}){modifierText} = {dices.Sum() + (modifier ?? 0)}";
         }
 
         private void TextBoxWriteLine(string message) => MessageOutput += $"{message}{Environment.NewLine}";
@@ -171,5 +199,18 @@ namespace WpfApplication.ViewModel
         }
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    internal static class Dice
+    {
+        private static readonly Random rand = new Random();
+
+        public static int[] Throw(int quantity, int sides)
+        {
+            var results = new int[quantity];
+            for (int i = 0; i < quantity; i++)
+                results[i] = rand.Next(1, sides + 1);
+            return results;
+        }
     }
 }

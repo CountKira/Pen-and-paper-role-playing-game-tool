@@ -1,4 +1,5 @@
-﻿using MVVM_Framework;
+﻿using System;
+using MVVM_Framework;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -19,22 +20,30 @@ namespace WpfApplication.ViewModel
 
         private string imageName;
 
+        private bool setGridSizeActiv;
         private double sizeValue = 1;
 
         private bool triggerOnPropertyChanged = true;
-        private double canvasHeight;
-        private double canvasWidth;
+
+        private Point? upperLeftCorner;
 
         public TableViewModel()
         {
             NewTableElementCommand = new ActionCommand(NewTableElementMethod);
             ChangeBackgroundCommand = new ActionCommand(ChangeBackgoundMethod);
+            SetGridSizeReceiveMouseClickCommand = new ActionCommand(SetGridSizeReceiveMouseClickMethod);
+            SetGridSizeCommand = new ActionCommand(SetGridSizeCommandMethod);
+            GetContextMenuPositionCommand = new ActionCommand(GetContextMenuPositionMethod);
             Actions = new ObservableCollection<ContextAction>
             {
                 new ContextAction{Name = "Add Element",Action = new ActionCommand(NewTableElementMethod)}
             };
             ImageName = "Background.png";
         }
+
+        private Point rightMouseClickPosition;
+
+        private void GetContextMenuPositionMethod(object obj) => rightMouseClickPosition = Mouse.GetPosition(obj as IInputElement);
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -53,7 +62,13 @@ namespace WpfApplication.ViewModel
         }
 
         [UsedImplicitly]
+        public double BackgroundSize => SizeValue * 1920;
+
+        [UsedImplicitly]
         public ICommand ChangeBackgroundCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand GetContextMenuPositionCommand { get; }
 
         public IClientServer ClientServer { private get; set; }
 
@@ -66,18 +81,18 @@ namespace WpfApplication.ViewModel
                 var fullPictureUrl = PictureHelper.GetFullPictureUrl(ImageName);
                 if (!File.Exists(fullPictureUrl))
                 {
-                    Logger.Log($"TableViewModel.ImageName-> Value: {value}, fullPictureUrl: {fullPictureUrl}");
-
                     SendData("PictureRequest", ImageName);
                     return;
                 }
-
                 BackgroundImageUrl = fullPictureUrl;
                 OnPropertyChanged(nameof(ImageName));
             }
         }
 
         public ICommand NewTableElementCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand SetGridSizeCommand { get; }
 
         [UsedImplicitly]
         public double SizeValue
@@ -88,18 +103,22 @@ namespace WpfApplication.ViewModel
                 sizeValue = value;
                 OnPropertyChanged(nameof(SizeValue));
                 OnPropertyChanged(nameof(BackgroundSize));
+                foreach (var tableElement in TableElements)
+                {
+                    tableElement.ZoomMultiplier = SizeValue;
+                }
             }
         }
 
-        [UsedImplicitly]
-        public double BackgroundSize => SizeValue * 1920;
-
         public ObservableCollection<TableElement> TableElements { get; private set; } = new ObservableCollection<TableElement>();
 
-        public static void SetTableElementPosition(Point position, TableElement changedElement)
+        [UsedImplicitly]
+        public ICommand SetGridSizeReceiveMouseClickCommand { get; }
+
+        public void SetTableElementPosition(Point position, TableElement changedElement)
         {
-            changedElement.X = position.X;
-            changedElement.Y = position.Y;
+            changedElement.X = position.X / SizeValue;
+            changedElement.Y = position.Y / SizeValue;
         }
 
         public void Add(TableElementData tableElementData)
@@ -186,6 +205,7 @@ namespace WpfApplication.ViewModel
                 {
                     var tableElement = sender as TableElement;
                     var index = TableElements.IndexOf(tableElement);
+                    if (index < 0) return;
                     var value = typeof(TableElement).GetProperty(e.PropertyName)?.GetValue(tableElement, null);
                     SendData("TableElementChanged", new TableElementPropertyChangedData { Index = index, PropertyName = e.PropertyName, Value = value });
                 }
@@ -193,7 +213,7 @@ namespace WpfApplication.ViewModel
 
         private void NewTableElementMethod(object parameter)
         {
-            var tableElement = new TableElement();
+            var tableElement = new TableElement() { X = rightMouseClickPosition.X / sizeValue, Y = rightMouseClickPosition.Y / sizeValue };
             AddTableElement(tableElement);
             var newtableElementData = TableElementData.ConvertFromTableElement(tableElement);
             ClientServer?.SendData(new DataHolder { Tag = TagAddCircle, Data = newtableElementData });
@@ -206,5 +226,40 @@ namespace WpfApplication.ViewModel
         }
 
         private void SendData(string tag, object data) => ClientServer?.SendData(new DataHolder { Tag = tag, Data = data });
+
+        private void SetGridSizeCommandMethod(object obj)
+        {
+            MessageBox.Show("Click on the upper left corner of a tile and then on the bottom right corner of it");
+            setGridSizeActiv = true;
+            upperLeftCorner = null;
+        }
+
+        private void SetGridSizeReceiveMouseClickMethod(object obj)
+        {
+            if (obj == null || !setGridSizeActiv) return;
+
+            var mousePosition = Mouse.GetPosition(obj as IInputElement);
+            if (upperLeftCorner == null)
+            {
+                upperLeftCorner = mousePosition;
+            }
+            else
+            {
+                setGridSizeActiv = false;
+                var bottomRightCorner = mousePosition;
+                var sizeDifference = Point.Subtract(bottomRightCorner, (Vector)upperLeftCorner);
+                var size = Math.Abs(GetSmallerCoordinate(sizeDifference));
+                var unzoomedSize = size / sizeValue;
+                foreach (var tableElement in TableElements)
+                {
+                    tableElement.BaseSize = unzoomedSize;
+                }
+            }
+        }
+
+        private static double GetSmallerCoordinate(Point sizeDifference)
+        {
+            return sizeDifference.X < sizeDifference.Y ? sizeDifference.X : sizeDifference.Y;
+        }
     }
 }

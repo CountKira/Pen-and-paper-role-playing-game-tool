@@ -1,5 +1,6 @@
 ﻿using MVVM_Framework;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using WpfApplication.Annotations;
@@ -8,82 +9,23 @@ namespace WpfApplication
 {
     public class TableElement : INotifyPropertyChanged, IEquatable<TableElement>
     {
+        private static readonly List<string> UnsendableProperties = new List<string>
+        {
+            nameof(Size),
+            nameof(ImageUrl),
+            nameof(XPosition),
+            nameof(YPosition),
+            nameof(ZoomMultiplier),
+        };
+
+        private static double baseSize = 50;
+        private static double zoomMultiplier = 1;
         private readonly ContextAction decreaseSizeAction;
-        private int sizeMultiplier = 1;
         private string imageName;
+        private string imageUrl;
+        private int sizeMultiplier = 1;
         private double x;
         private double y;
-        private string imageUrl;
-
-        public double X
-        {
-            get => x;
-            set => Set(value, ref x, nameof(X));
-        }
-
-        public double Y
-        {
-            get => y;
-            set => Set(value, ref y, nameof(Y));
-        }
-
-        public double BaseSize { get; set; } = 50;
-
-        public string ImageUrl
-        {
-            get => imageUrl;
-            set
-            {
-                if (value == imageUrl) return;
-                imageUrl = value;
-                OnPropertyChanged(nameof(ImageUrl));
-            }
-        }
-
-        [UsedImplicitly]
-        public string ImageName
-        {
-            get => imageName;
-            set
-            {
-                imageName = value;
-                ImageUrl = PictureHelper.GetFullPictureUrl(ImageName);
-                OnPropertyChanged(nameof(ImageName));
-            }
-        }
-
-        [UsedImplicitly]
-        public double Size => BaseSize * SizeMultiplier;
-
-        [UsedImplicitly]
-        public ObservableCollection<ContextAction> Actions { get; }
-
-        public int SizeMultiplier
-        {
-            get => sizeMultiplier;
-            set
-            {
-                if (value < 1 || sizeMultiplier == value) return;
-                sizeMultiplier = value;
-                decreaseSizeAction.Enabled = SizeMultiplier > 1;
-                OnPropertyChanged(nameof(SizeMultiplier));
-                OnPropertyChanged(nameof(Size));
-            }
-        }
-
-        private void Set(double value, ref double field, string propertyName)
-        {
-            if (IsDoubleEqual(value, field)) return;
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        public void ChangeProperty(TableElementPropertyChangedData tepcd) => typeof(TableElement).GetProperty(tepcd.PropertyName)?.SetValue(this, tepcd.Value);
-
-        private static bool IsDoubleEqual(double value, double field)
-        {
-            return (Math.Abs(value - field) < 0.00001);
-        }
 
         public TableElement()
         {
@@ -102,14 +44,123 @@ namespace WpfApplication
             ImageName = "Background.png";
         }
 
-        private void IncreaseSizeMethod(object obj)
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [UsedImplicitly]
+        public ObservableCollection<ContextAction> Actions { get; }
+
+        public double BaseSize
         {
-            SizeMultiplier++;
+            get => baseSize;
+            set
+            {
+                baseSize = value;
+                OnPropertyChanged(nameof(BaseSize));
+                OnPropertyChanged(nameof(Size));
+            }
         }
 
-        private void DecreaseSizeMethod(object obj)
+        [UsedImplicitly]
+        public string ImageName
         {
-            SizeMultiplier--;
+            get => imageName;
+            set
+            {
+                imageName = value;
+                ImageUrl = PictureHelper.GetFullPictureUrl(ImageName);
+                OnPropertyChanged(nameof(ImageName));
+            }
+        }
+
+        public string ImageUrl
+        {
+            get => imageUrl;
+            set
+            {
+                if (value == imageUrl) return;
+                imageUrl = value;
+                OnPropertyChanged(nameof(ImageUrl));
+            }
+        }
+
+        [UsedImplicitly]
+        public double Size => BaseSize * SizeMultiplier * ZoomMultiplier;
+
+        public int SizeMultiplier
+        {
+            get => sizeMultiplier;
+            set
+            {
+                if (value < 1 || sizeMultiplier == value) return;
+                sizeMultiplier = value;
+                decreaseSizeAction.Enabled = SizeMultiplier > 1;
+                OnPropertyChanged(nameof(SizeMultiplier));
+                OnPropertyChanged(nameof(Size));
+            }
+        }
+
+        public double X
+        {
+            get => x;
+            set
+            {
+                //var unzoomedValue = value / zoomMultiplier;
+                var unzoomedValue = value;
+                if (IsDoubleEqual(unzoomedValue, x)) return;
+                x = unzoomedValue;
+                OnPropertyChanged(nameof(X));
+                OnPropertyChanged(nameof(XPosition));
+            }
+        }
+
+        [UsedImplicitly]
+        public double XPosition => X * ZoomMultiplier;
+
+        public double Y
+        {
+            get => y;
+            set
+            {
+                var unzoomedValue = value;
+                //var unzoomedValue = value / zoomMultiplier;
+                if (IsDoubleEqual(unzoomedValue, y)) return;
+                y = unzoomedValue;
+                OnPropertyChanged(nameof(Y));
+                OnPropertyChanged(nameof(YPosition));
+            }
+        }
+
+        [UsedImplicitly]
+        public double YPosition => Y * ZoomMultiplier;
+
+        public double ZoomMultiplier
+        {
+            get => zoomMultiplier;
+            set
+            {
+                zoomMultiplier = value;
+                OnPropertyChanged(nameof(Size));
+                OnPropertyChanged(nameof(XPosition));
+                OnPropertyChanged(nameof(YPosition));
+            }
+        }
+
+        public static bool IsPropertySendable(string propertyName) => !UnsendableProperties.Contains(propertyName);
+
+        public void ChangeProperty(TableElementPropertyChangedData tepcd) => typeof(TableElement).GetProperty(tepcd.PropertyName)?.SetValue(this, tepcd.Value);
+
+        public override bool Equals(object obj) => Equals(obj as TableElement);
+
+        public bool Equals(TableElement other) => other != null && IsDoubleEqual(other.x, x) && IsDoubleEqual(other.y, y);
+
+        public override int GetHashCode()
+        {
+            return X.GetHashCode() + Y.GetHashCode();
+        }
+
+        private static bool IsDoubleEqual(double value, double field)
+        {
+            return (Math.Abs(value - field) < 0.00001);
         }
 
         private void ChangePictureMethod(object obj)
@@ -122,19 +173,23 @@ namespace WpfApplication
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private void DecreaseSizeMethod(object obj)
+        {
+            SizeMultiplier--;
+        }
+
+        private void IncreaseSizeMethod(object obj)
+        {
+            SizeMultiplier++;
+        }
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public override bool Equals(object obj) => Equals(obj as TableElement);
-
-        public bool Equals(TableElement other) => other != null && IsDoubleEqual(other.x, x) && IsDoubleEqual(other.y, y);
-
-        public override int GetHashCode()
+        private void Set(double value, ref double field, string propertyName)
         {
-            return X.GetHashCode() + Y.GetHashCode();
+            if (IsDoubleEqual(value, field)) return;
+            field = value;
+            OnPropertyChanged(propertyName);
         }
-
-        public static bool IsPropertySendable(string propertyName) => propertyName != nameof(Size) && propertyName != nameof(ImageUrl);
     }
 }

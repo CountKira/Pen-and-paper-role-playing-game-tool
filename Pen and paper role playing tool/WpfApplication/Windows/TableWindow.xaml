@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p = "clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.TableWindow_title}" Height="630" Width="720"
-        Name="TableViewWindowName">
+        Title="{x:Static p:Resources.TableWindow_title}" Height="630" Width="720">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="{x:Static p:Resources.Window_View}">
@@ -14,10 +13,17 @@
             </MenuItem>
         </Menu>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <Label Content="Zoom:" />
-            <Slider Name="Slider" Value="{Binding SizeValue}" Minimum="0" Maximum="2" Width="200" />
+            <Label Content="Zoom:" VerticalAlignment="Center" />
+            <Slider Name="Slider" Value="{Binding SizeValue}" Minimum="0" Maximum="2" Width="200" VerticalAlignment="Center" />
+            <Button Content="Set grid size" Padding="5" Margin="5" Command="{Binding SetGridSizeCommand}" />
+            <Slider Name="SliderX" Value="0" Minimum="-1920" Maximum="1920" Width="200" VerticalAlignment="Center" />
+            <Slider Name="SliderY" Value="0" Minimum="-1920" Maximum="1920" Width="200" VerticalAlignment="Center" />
         </StackPanel>
-        <Canvas Name="Canvas" ClipToBounds="True">
+        <Canvas ClipToBounds="True" Background="Black" MouseDown="DragView_MouseDown" MouseMove="DragView_MouseMove" MouseUp="DragView_MouseUp" MouseWheel="Canvas_MouseWheel">
+            <Canvas.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding SetGridSizeReceiveMouseClickCommand}" CommandParameter="{Binding ElementName=Canvas}" />
+                <MouseBinding Gesture="RightClick" Command="{Binding GetContextMenuPositionCommand}" CommandParameter="{Binding ElementName=Canvas}" />
+            </Canvas.InputBindings>
             <Canvas.ContextMenu>
                 <ContextMenu ItemsSource ="{Binding Actions}">
                     <ContextMenu.ItemContainerStyle>
@@ -28,47 +34,49 @@
                     </ContextMenu.ItemContainerStyle>
                 </ContextMenu>
             </Canvas.ContextMenu>
-            <Rectangle Width="{Binding BackgroundSize}" Height="{Binding BackgroundSize}">
-                <Rectangle.Fill>
-                    <ImageBrush AlignmentX="Left" AlignmentY="Top" ImageSource="{Binding BackgroundImageUrl}"
+            <Canvas Name="Canvas" Canvas.Left="{Binding ElementName=SliderX, Path=Value}" Canvas.Top="{Binding ElementName=SliderY, Path=Value}">
+                <Rectangle Width="{Binding BackgroundSize}" Height="{Binding BackgroundSize}">
+                    <Rectangle.Fill>
+                        <ImageBrush AlignmentX="Left" AlignmentY="Top" ImageSource="{Binding BackgroundImageUrl}"
                                 Stretch="Uniform">
-                    </ImageBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-            <ItemsControl ItemsSource="{Binding TableElements}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding X}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Ellipse Width="{Binding Size}" Height="{Binding Size}" Stroke="Black" StrokeThickness="2"
+                        </ImageBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <ItemsControl ItemsSource="{Binding TableElements}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding XPosition}" />
+                            <Setter Property="Canvas.Top" Value="{Binding YPosition}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Ellipse Width="{Binding Size}" Height="{Binding Size}" Stroke="Yellow" StrokeThickness="2"
                              MouseMove="Ellipse_MouseMove" MouseDown="Ellipse_MouseDown" MouseUp="Ellipse_MouseUp">
-                            <Ellipse.ContextMenu>
-                                <ContextMenu ItemsSource ="{Binding Actions}">
-                                    <ContextMenu.ItemContainerStyle>
-                                        <Style TargetType="MenuItem">
-                                            <Setter Property="Header" Value="{Binding Name}" />
-                                            <Setter Property="Command" Value="{Binding Action}" />
-                                            <Setter Property="IsEnabled" Value="{Binding Enabled}" />
-                                        </Style>
-                                    </ContextMenu.ItemContainerStyle>
-                                </ContextMenu>
-                            </Ellipse.ContextMenu>
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImageUrl}" />
-                            </Ellipse.Fill>
-                        </Ellipse>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                <Ellipse.ContextMenu>
+                                    <ContextMenu ItemsSource ="{Binding Actions}">
+                                        <ContextMenu.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{Binding Name}" />
+                                                <Setter Property="Command" Value="{Binding Action}" />
+                                                <Setter Property="IsEnabled" Value="{Binding Enabled}" />
+                                            </Style>
+                                        </ContextMenu.ItemContainerStyle>
+                                    </ContextMenu>
+                                </Ellipse.ContextMenu>
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding ImageUrl}" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Canvas>
         </Canvas>
     </DockPanel>
 </Window>

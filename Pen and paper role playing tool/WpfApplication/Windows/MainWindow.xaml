@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p = "clr-namespace:WpfApplication.Properties"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.Chat_window_title}" Height="420" Width="640">
+        Title="{x:Static p:Resources.Chat_window_title}" Height="420" Width="640" Topmost="True">
     <DockPanel FocusManager.FocusedElement="{Binding ElementName=MessageInput}">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="{x:Static p:Resources.Window_Chat}">
