@@ -151,6 +151,15 @@ namespace WpfApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete_element {
+            get {
+                return ResourceManager.GetString("Delete_element", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internet.
         /// </summary>
         public static string Internet {
@@ -223,7 +232,7 @@ namespace WpfApplication.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Change BackgroundImageUrl.
+        ///   Looks up a localized string similar to _Change background image.
         /// </summary>
         public static string Window_Change_background {
             get {
@@ -250,11 +259,47 @@ namespace WpfApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _File.
+        /// </summary>
+        public static string Window_File {
+            get {
+                return ResourceManager.GetString("Window_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open.
+        /// </summary>
+        public static string Window_Load_Table {
+            get {
+                return ResourceManager.GetString("Window_Load_Table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _New Table.
+        /// </summary>
+        public static string Window_New_Table {
+            get {
+                return ResourceManager.GetString("Window_New_Table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open _Table.
         /// </summary>
         public static string Window_Open_Table {
             get {
                 return ResourceManager.GetString("Window_Open_Table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Save.
+        /// </summary>
+        public static string Window_Save_Table {
+            get {
+                return ResourceManager.GetString("Window_Save_Table", resourceCulture);
             }
         }
         

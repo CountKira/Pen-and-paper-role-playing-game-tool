@@ -178,7 +178,7 @@
     <value>_View</value>
   </data>
   <data name="Window_Change_background" xml:space="preserve">
-    <value>_Change BackgroundImageUrl</value>
+    <value>_Change background image</value>
   </data>
   <data name="TableWindow_title" xml:space="preserve">
     <value>Table</value>
@@ -188,5 +188,20 @@
   </data>
   <data name="Connection_to_server_lost" xml:space="preserve">
     <value>Connection to server lost.</value>
+  </data>
+  <data name="Window_File" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="Window_Save_Table" xml:space="preserve">
+    <value>_Save</value>
+  </data>
+  <data name="Window_Load_Table" xml:space="preserve">
+    <value>_Open</value>
+  </data>
+  <data name="Window_New_Table" xml:space="preserve">
+    <value>_New Table</value>
+  </data>
+  <data name="Delete_element" xml:space="preserve">
+    <value>Delete</value>
   </data>
 </root>

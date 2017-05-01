@@ -61,49 +61,49 @@
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
+    <xsd:elementData name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+          <xsd:elementData name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:elementData name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
               <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
               <xsd:attribute ref="xml:space" />
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
+          </xsd:elementData>
+          <xsd:elementData name="assembly">
             <xsd:complexType>
               <xsd:attribute name="alias" type="xsd:string" />
               <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
+          </xsd:elementData>
+          <xsd:elementData name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:elementData name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:elementData name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
               <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
               <xsd:attribute ref="xml:space" />
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
+          </xsd:elementData>
+          <xsd:elementData name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:elementData name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
               <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
-          </xsd:element>
+          </xsd:elementData>
         </xsd:choice>
       </xsd:complexType>
-    </xsd:element>
+    </xsd:elementData>
   </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -188,5 +188,20 @@
   </data>
   <data name="Connection_to_server_lost" xml:space="preserve">
     <value>Verbindung zum Server wurde getrennt.</value>
+  </data>
+  <data name="Window_File" xml:space="preserve">
+    <value>_Datei</value>
+  </data>
+  <data name="Window_Save_Table" xml:space="preserve">
+    <value>_Speichern</value>
+  </data>
+  <data name="Window_Load_Table" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="Window_New_Table" xml:space="preserve">
+    <value>_Neuer Tisch</value>
+  </data>
+  <data name="Delete_element" xml:space="preserve">
+    <value>Löschen</value>
   </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using MVVM_Framework;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApplication.ViewModel;
 
@@ -36,7 +37,7 @@ namespace WpfApplication.Windows
         private void Ellipse_MouseMove(object sender, MouseEventArgs e)
         {
             if (!ReferenceEquals(capturedElement, sender)) return;
-            var position = e.GetPosition(Canvas);
+            var position = e.GetPosition(Inner);
             var endposition = Point.Subtract(position, (Vector)offset);
             var tableElement = capturedElement.DataContext as TableElement;
             var dataContext = DataContext as TableViewModel;
@@ -59,9 +60,21 @@ namespace WpfApplication.Windows
             var currentPosition = e.GetPosition(sender as FrameworkElement);
             var distance = Point.Subtract(currentPosition, (Vector)viewOffset);
 
-            SliderX.Value += distance.X;
-            SliderY.Value += distance.Y;
+            SliderX += distance.X;
+            SliderY += distance.Y;
             viewOffset = currentPosition;
+        }
+
+        private double SliderX
+        {
+            get => Inner.TranslatePoint(new Point(0, 0), OuterCanvas).X;
+            set => Canvas.SetLeft(Inner, value);
+        }
+
+        private double SliderY
+        {
+            get => Inner.TranslatePoint(new Point(0, 0), OuterCanvas).Y;
+            set => Canvas.SetTop(Inner, value);
         }
 
         private void DragView_MouseUp(object sender, MouseEventArgs e)
@@ -73,9 +86,18 @@ namespace WpfApplication.Windows
 
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+            var oldZoom = Slider.Value;
+            var middleX = OuterCanvas.ActualWidth / 2;
+            var oldOffsetX = (middleX - Canvas.GetLeft(Inner));
+            var middleY = OuterCanvas.ActualHeight / 2;
+            var oldOffsetY = (middleY - Canvas.GetTop(Inner));
             const double wheelMultiplier = 0.04;
             var delta = (double)e.Delta / 120 * wheelMultiplier;
             Slider.Value += delta;
+            var newX = middleX - ((oldOffsetX / oldZoom * Slider.Value));
+            var newY = middleY - ((oldOffsetY / oldZoom * Slider.Value));
+            SliderX = newX;
+            SliderY = newY;
         }
     }
 }

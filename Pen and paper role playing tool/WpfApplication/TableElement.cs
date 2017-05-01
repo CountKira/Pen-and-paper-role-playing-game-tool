@@ -3,7 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
+using Microsoft.Win32;
 using WpfApplication.Annotations;
+using WpfApplication.ViewModel;
 
 namespace WpfApplication
 {
@@ -20,6 +23,7 @@ namespace WpfApplication
 
         private static double baseSize = 50;
         private static double zoomMultiplier = 1;
+        private readonly CharacterSheetViewModel characterSheetViewModel = new CharacterSheetViewModel();
         private readonly ContextAction decreaseSizeAction;
         private string imageName;
         private string imageUrl;
@@ -37,11 +41,54 @@ namespace WpfApplication
             };
             Actions = new ObservableCollection<ContextAction>
             {
+                new ContextAction {Action = new ActionCommand(SaveElementMethod), Name = "Save Element"},
+                new ContextAction {Action = new ActionCommand(LoadElementMethod), Name = "Load Element"},
                 new ContextAction {Action = new ActionCommand(IncreaseSizeMethod), Name = "Increase Size"},
                 decreaseSizeAction,
                 new ContextAction { Action = new ActionCommand(ChangePictureMethod), Name = "Change Picture"},
+                new ContextAction{Action=new ActionCommand(DeleteMethod), Name="Delete"},
+                new ContextAction{Action=new ActionCommand(ShowCharacterSheetMethod), Name="Character Sheet"},
             };
             ImageName = "Background.png";
+            characterSheetViewModel.PropertyChanged += (s, e) =>
+            {
+                var characterSheetChange = new CharacterSheetChange { Item = s as Item, TableElement = this };
+                PropertyChanged?.Invoke(characterSheetChange, e);
+            };
+        }
+
+        private void SaveElementMethod(object obj)
+        {
+            var dialog = new SaveFileDialog { Filter = "Element files (*.element)|*.element" };
+            if (dialog.ShowDialog() != true) return;
+            var tableElementData = TableElementData.ConvertFromTableElement(this);
+            var fileName = dialog.FileName;
+            try
+            {
+                XmlSerializerHelper.SaveXml(tableElementData, fileName);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Could not save as {fileName}.");
+            }
+        }
+
+        private void LoadElementMethod(object obj)
+        {
+            var dialog = new OpenFileDialog { Filter = "Element files (*.element)|*.element" };
+            if (dialog.ShowDialog() != true) return;
+            var fileName = dialog.FileName;
+            try
+            {
+                var tableElementData = XmlSerializerHelper.ReadXml<TableElementData>(fileName);
+                CharacterSheet = tableElementData.CharacterSheet;
+                ImageName = tableElementData.ImageName;
+                SizeMultiplier = tableElementData.SizeMultiplier;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Could not load the file: {fileName}.");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -59,6 +106,16 @@ namespace WpfApplication
                 OnPropertyChanged(nameof(Size));
             }
         }
+
+        public List<Item> CharacterSheet
+        {
+            get => characterSheetViewModel.Items;
+            set => characterSheetViewModel.Items = value;
+        }
+
+        public ObservableCollection<TableElement> Container { get; set; }
+
+        public IDialogService DialogService { get; set; }
 
         [UsedImplicitly]
         public string ImageName
@@ -147,7 +204,19 @@ namespace WpfApplication
 
         public static bool IsPropertySendable(string propertyName) => !UnsendableProperties.Contains(propertyName);
 
-        public void ChangeProperty(TableElementPropertyChangedData tepcd) => typeof(TableElement).GetProperty(tepcd.PropertyName)?.SetValue(this, tepcd.Value);
+        public void ChangeProperty(TableElementPropertyChangedData tepcd)
+        {
+            switch (tepcd.Value)
+            {
+                case Item item:
+                    characterSheetViewModel.SetItem(item);
+                    break;
+
+                default:
+                    typeof(TableElement).GetProperty(tepcd.PropertyName)?.SetValue(this, tepcd.Value);
+                    break;
+            }
+        }
 
         public override bool Equals(object obj) => Equals(obj as TableElement);
 
@@ -178,6 +247,8 @@ namespace WpfApplication
             SizeMultiplier--;
         }
 
+        private void DeleteMethod(object obj) => DispatcherHelper.Invoke(() => Container.Remove(this));
+
         private void IncreaseSizeMethod(object obj)
         {
             SizeMultiplier++;
@@ -185,11 +256,9 @@ namespace WpfApplication
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        private void Set(double value, ref double field, string propertyName)
+        private void ShowCharacterSheetMethod(object obj)
         {
-            if (IsDoubleEqual(value, field)) return;
-            field = value;
-            OnPropertyChanged(propertyName);
+            DialogService.Show(characterSheetViewModel);
         }
     }
 }

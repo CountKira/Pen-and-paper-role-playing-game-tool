@@ -27,6 +27,7 @@ namespace WpfApplication
             dialogService.Register<ClientSetupViewModel, ClientSetup>();
             dialogService.Register<ServerSetupViewModel, ServerSetup>();
             dialogService.Register<TableViewModel, TableWindow>();
+            dialogService.Register<CharacterSheetViewModel, CharacterSheet>();
         }
     }
 }

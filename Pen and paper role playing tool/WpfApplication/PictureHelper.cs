@@ -11,7 +11,7 @@ namespace WpfApplication
 
         public static (bool, string) ChangePictureUrl()
         {
-            var dialog = new OpenFileDialog { Filter = "BackgroundImageUrl files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg" };
+            var dialog = new OpenFileDialog { Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg" };
             var result = dialog.ShowDialog() ?? false;
             if (!result) return (false, null);
 

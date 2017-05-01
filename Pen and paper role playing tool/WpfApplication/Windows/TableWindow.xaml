@@ -8,6 +8,11 @@
         Title="{x:Static p:Resources.TableWindow_title}" Height="630" Width="720">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
+            <MenuItem Header="{x:Static p:Resources.Window_File}">
+                <MenuItem Header="{x:Static p:Resources.Window_New_Table}" Command="{Binding NewTableCommand}" />
+                <MenuItem Header="{x:Static p:Resources.Window_Save_Table}" Command="{Binding SaveCommand}" />
+                <MenuItem Header="{x:Static p:Resources.Window_Load_Table}" Command="{Binding OpenCommand}" />
+            </MenuItem>
             <MenuItem Header="{x:Static p:Resources.Window_View}">
                 <MenuItem Header="{x:Static p:Resources.Window_Change_background}" Command="{Binding ChangeBackgroundCommand}" />
             </MenuItem>
@@ -16,13 +21,11 @@
             <Label Content="Zoom:" VerticalAlignment="Center" />
             <Slider Name="Slider" Value="{Binding SizeValue}" Minimum="0" Maximum="2" Width="200" VerticalAlignment="Center" />
             <Button Content="Set grid size" Padding="5" Margin="5" Command="{Binding SetGridSizeCommand}" />
-            <Slider Name="SliderX" Value="0" Minimum="-1920" Maximum="1920" Width="200" VerticalAlignment="Center" />
-            <Slider Name="SliderY" Value="0" Minimum="-1920" Maximum="1920" Width="200" VerticalAlignment="Center" />
         </StackPanel>
-        <Canvas ClipToBounds="True" Background="Black" MouseDown="DragView_MouseDown" MouseMove="DragView_MouseMove" MouseUp="DragView_MouseUp" MouseWheel="Canvas_MouseWheel">
+        <Canvas Name="OuterCanvas" ClipToBounds="True" Background="Black" MouseDown="DragView_MouseDown" MouseMove="DragView_MouseMove" MouseUp="DragView_MouseUp" MouseWheel="Canvas_MouseWheel">
             <Canvas.InputBindings>
-                <MouseBinding Gesture="LeftClick" Command="{Binding SetGridSizeReceiveMouseClickCommand}" CommandParameter="{Binding ElementName=Canvas}" />
-                <MouseBinding Gesture="RightClick" Command="{Binding GetContextMenuPositionCommand}" CommandParameter="{Binding ElementName=Canvas}" />
+                <MouseBinding Gesture="LeftClick" Command="{Binding SetGridSizeReceiveMouseClickCommand}" CommandParameter="{Binding ElementName=Inner}" />
+                <MouseBinding Gesture="RightClick" Command="{Binding GetContextMenuPositionCommand}" CommandParameter="{Binding ElementName=Inner}" />
             </Canvas.InputBindings>
             <Canvas.ContextMenu>
                 <ContextMenu ItemsSource ="{Binding Actions}">
@@ -34,7 +37,7 @@
                     </ContextMenu.ItemContainerStyle>
                 </ContextMenu>
             </Canvas.ContextMenu>
-            <Canvas Name="Canvas" Canvas.Left="{Binding ElementName=SliderX, Path=Value}" Canvas.Top="{Binding ElementName=SliderY, Path=Value}">
+            <Canvas Name="Inner">
                 <Rectangle Width="{Binding BackgroundSize}" Height="{Binding BackgroundSize}">
                     <Rectangle.Fill>
                         <ImageBrush AlignmentX="Left" AlignmentY="Top" ImageSource="{Binding BackgroundImageUrl}"
@@ -56,7 +59,7 @@
                     </ItemsControl.ItemContainerStyle>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Ellipse Width="{Binding Size}" Height="{Binding Size}" Stroke="Yellow" StrokeThickness="2"
+                            <Ellipse Name ="Element" Width="{Binding Size}" Height="{Binding Size}" Stroke="Yellow" StrokeThickness="2"
                              MouseMove="Ellipse_MouseMove" MouseDown="Ellipse_MouseDown" MouseUp="Ellipse_MouseUp">
                                 <Ellipse.ContextMenu>
                                     <ContextMenu ItemsSource ="{Binding Actions}">

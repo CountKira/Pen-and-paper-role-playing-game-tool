@@ -88,6 +88,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CharacterSheetChange.cs" />
+    <Compile Include="ViewModel\CharacterSheetViewModel.cs" />
     <Compile Include="ContextAction.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TableElement.cs" />
@@ -100,6 +102,9 @@
     <Compile Include="TableElementPictureResponse.cs" />
     <Compile Include="TableElementPictureRequest.cs" />
     <Compile Include="ViewModel\TableViewModel.cs" />
+    <Compile Include="Windows\CharacterSheet.xaml.cs">
+      <DependentUpon>CharacterSheet.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ClientSetup.xaml.cs">
       <DependentUpon>ClientSetup.xaml</DependentUpon>
     </Compile>
@@ -111,6 +116,10 @@
     <Compile Include="Windows\TableWindow.xaml.cs">
       <DependentUpon>TableWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Windows\CharacterSheet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ClientSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

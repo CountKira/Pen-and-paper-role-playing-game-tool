@@ -19,7 +19,7 @@ namespace WpfApplication.Test.ViewModel
         {
             mock = new Mock<IClientServer>();
             mock.Setup(cs => cs.SendData(It.IsAny<DataHolder>())).Callback<DataHolder>(dh => dataHolder = dh);
-            tableViewModel = new TableViewModel();
+            tableViewModel = new TableViewModel(null);
         }
 
         [TearDown]

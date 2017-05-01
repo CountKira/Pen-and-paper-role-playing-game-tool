@@ -5,8 +5,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
 using TCP_Framework;
 using WpfApplication.Annotations;
 
@@ -15,35 +17,40 @@ namespace WpfApplication.ViewModel
     public sealed class TableViewModel : INotifyPropertyChanged
     {
         private const string TagAddCircle = "Add Circle";
-
+        private readonly IDialogService dialogService;
         private string backgroundImageUrl;
 
         private string imageName;
 
+        private Point rightMouseClickPosition;
         private bool setGridSizeActiv;
         private double sizeValue = 1;
 
         private bool triggerOnPropertyChanged = true;
 
+        private bool triggerSendChangeOnDelete = true;
         private Point? upperLeftCorner;
 
-        public TableViewModel()
+        public TableViewModel(IDialogService dialogService)
         {
+            this.dialogService = dialogService;
             NewTableElementCommand = new ActionCommand(NewTableElementMethod);
             ChangeBackgroundCommand = new ActionCommand(ChangeBackgoundMethod);
             SetGridSizeReceiveMouseClickCommand = new ActionCommand(SetGridSizeReceiveMouseClickMethod);
             SetGridSizeCommand = new ActionCommand(SetGridSizeCommandMethod);
             GetContextMenuPositionCommand = new ActionCommand(GetContextMenuPositionMethod);
+            SaveCommand = new ActionCommand(SaveMethod);
+            OpenCommand = new ActionCommand(OpenMethod);
+            NewTableCommand = new ActionCommand(NewTableMethod);
+
             Actions = new ObservableCollection<ContextAction>
             {
                 new ContextAction{Name = "Add Element",Action = new ActionCommand(NewTableElementMethod)}
             };
             ImageName = "Background.png";
+
+            TableElements.CollectionChanged += TableElements_CollectionChanged;
         }
-
-        private Point rightMouseClickPosition;
-
-        private void GetContextMenuPositionMethod(object obj) => rightMouseClickPosition = Mouse.GetPosition(obj as IInputElement);
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -67,10 +74,10 @@ namespace WpfApplication.ViewModel
         [UsedImplicitly]
         public ICommand ChangeBackgroundCommand { get; }
 
+        public IClientServer ClientServer { private get; set; }
+
         [UsedImplicitly]
         public ICommand GetContextMenuPositionCommand { get; }
-
-        public IClientServer ClientServer { private get; set; }
 
         public string ImageName
         {
@@ -89,10 +96,22 @@ namespace WpfApplication.ViewModel
             }
         }
 
+        [UsedImplicitly]
+        public ICommand NewTableCommand { get; }
+
         public ICommand NewTableElementCommand { get; }
 
         [UsedImplicitly]
+        public ICommand OpenCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand SaveCommand { get; }
+
+        [UsedImplicitly]
         public ICommand SetGridSizeCommand { get; }
+
+        [UsedImplicitly]
+        public ICommand SetGridSizeReceiveMouseClickCommand { get; }
 
         [UsedImplicitly]
         public double SizeValue
@@ -111,15 +130,6 @@ namespace WpfApplication.ViewModel
         }
 
         public ObservableCollection<TableElement> TableElements { get; private set; } = new ObservableCollection<TableElement>();
-
-        [UsedImplicitly]
-        public ICommand SetGridSizeReceiveMouseClickCommand { get; }
-
-        public void SetTableElementPosition(Point position, TableElement changedElement)
-        {
-            changedElement.X = position.X / SizeValue;
-            changedElement.Y = position.Y / SizeValue;
-        }
 
         public void Add(TableElementData tableElementData)
         {
@@ -149,6 +159,19 @@ namespace WpfApplication.ViewModel
             }
         }
 
+        public void DeleteElement(int index)
+        {
+            triggerSendChangeOnDelete = false;
+            var are = new AutoResetEvent(false);
+            DispatcherHelper.Invoke(() =>
+            {
+                TableElements.RemoveAt(index);
+                are.Set();
+            });
+            are.WaitOne();
+            triggerSendChangeOnDelete = true;
+        }
+
         public TableViewData GetData()
         {
             var tableElementDatas = from element in TableElements
@@ -169,13 +192,17 @@ namespace WpfApplication.ViewModel
         public void SetData(TableViewData tvm)
         {
             ImageName = tvm.ImageName;
-            OnPropertyChanged(nameof(BackgroundImageUrl));
             var newTableElements = from elementData in tvm.Elements
                                    select TableElementData.ConvertToTableElement(elementData);
             var newTableElementsCollection = newTableElements.ToList();
-            foreach (var element in newTableElementsCollection)
-                element.PropertyChanged += Element_PropertyChanged;
-            TableElements = new ObservableCollection<TableElement>(newTableElementsCollection);
+            DispatcherHelper.Invoke(() =>
+            {
+                TableElements.Clear();
+                foreach (var element in newTableElementsCollection)
+                {
+                    AddTableElement(element);
+                }
+            });
         }
 
         public void SetTableElementPicture(TableElementPictureResponse tableElementPictureResponse)
@@ -184,10 +211,23 @@ namespace WpfApplication.ViewModel
             TableElements[tableElementPictureResponse.Index].ImageName = tableElementPictureResponse.PictureName;
         }
 
+        public void SetTableElementPosition(Point position, TableElement changedElement)
+        {
+            changedElement.X = position.X / SizeValue;
+            changedElement.Y = position.Y / SizeValue;
+        }
+
+        private static double GetSmallerCoordinate(Point sizeDifference)
+        {
+            return sizeDifference.X < sizeDifference.Y ? sizeDifference.X : sizeDifference.Y;
+        }
+
         private void AddTableElement(TableElement tableElement)
         {
+            tableElement.DialogService = dialogService;
             tableElement.PropertyChanged += Element_PropertyChanged;
-            TableElements.Add(tableElement);
+            tableElement.Container = TableElements;
+            DispatcherHelper.Invoke(() => TableElements.Add(tableElement));
         }
 
         private void ChangeBackgoundMethod(object obj)
@@ -201,15 +241,45 @@ namespace WpfApplication.ViewModel
         private void Element_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             lock (this)
-                if (triggerOnPropertyChanged && TableElement.IsPropertySendable(e.PropertyName))
+                if (triggerOnPropertyChanged)
                 {
-                    var tableElement = sender as TableElement;
-                    var index = TableElements.IndexOf(tableElement);
-                    if (index < 0) return;
-                    var value = typeof(TableElement).GetProperty(e.PropertyName)?.GetValue(tableElement, null);
-                    SendData("TableElementChanged", new TableElementPropertyChangedData { Index = index, PropertyName = e.PropertyName, Value = value });
+                    switch (sender)
+                    {
+                        case TableElement tableElement:
+                            if (TableElement.IsPropertySendable(e.PropertyName))
+                            {
+                                var index = TableElements.IndexOf(tableElement);
+                                if (index < 0) return;
+                                var value = typeof(TableElement).GetProperty(e.PropertyName)?.GetValue(tableElement, null);
+                                SendData("TableElementChanged",
+                                    new TableElementPropertyChangedData
+                                    {
+                                        Index = index,
+                                        PropertyName = e.PropertyName,
+                                        Value = value
+                                    });
+                            }
+                            break;
+
+                        case CharacterSheetChange sheet:
+                            {
+                                var index = TableElements.IndexOf(sheet.TableElement);
+                                if (index < 0) return;
+                                var value = sheet.Item;
+                                SendData("TableElementChanged",
+                                    new TableElementPropertyChangedData
+                                    {
+                                        Index = index,
+                                        PropertyName = e.PropertyName,
+                                        Value = value
+                                    });
+                            }
+                            break;
+                    }
                 }
         }
+
+        private void GetContextMenuPositionMethod(object obj) => rightMouseClickPosition = Mouse.GetPosition(obj as IInputElement);
 
         private void NewTableElementMethod(object parameter)
         {
@@ -219,10 +289,35 @@ namespace WpfApplication.ViewModel
             ClientServer?.SendData(new DataHolder { Tag = TagAddCircle, Data = newtableElementData });
         }
 
+        private void NewTableMethod(object obj)
+        {
+            ImageName = "Background.png";
+            DispatcherHelper.Invoke(() => TableElements.Clear());
+            SendData("TableViewModelResponse", GetData());
+        }
+
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OpenMethod(object obj)
+        {
+            var dialog = new OpenFileDialog { Filter = "Table files (*.table)|*.table" };
+            if (dialog.ShowDialog() != true) return;
+            var tvm = XmlSerializerHelper.ReadXml<TableViewData>(dialog.FileName);
+            SetData(tvm);
+            SendData("TableViewModelResponse", GetData());
+        }
+
+        private void SaveMethod(object obj)
+        {
+            var dialog = new SaveFileDialog { Filter = "Table files (*.table)|*.table" };
+            if (dialog.ShowDialog() != true) return;
+            var tableViewData = GetData();
+            var fileName = dialog.FileName;
+            XmlSerializerHelper.SaveXml(tableViewData, fileName);
         }
 
         private void SendData(string tag, object data) => ClientServer?.SendData(new DataHolder { Tag = tag, Data = data });
@@ -257,9 +352,13 @@ namespace WpfApplication.ViewModel
             }
         }
 
-        private static double GetSmallerCoordinate(Point sizeDifference)
+        private void TableElements_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            return sizeDifference.X < sizeDifference.Y ? sizeDifference.X : sizeDifference.Y;
+            if (e.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Remove) return;
+            if (triggerSendChangeOnDelete)
+            {
+                SendData("TableElementDeleted", e.OldStartingIndex);
+            }
         }
     }
 }

@@ -53,7 +53,7 @@ namespace WpfApplication.ViewModel
             SetupServerCommand = new ActionCommand(SetupServerMethod);
             SetupClientCommand = new ActionCommand(SetupClientMethod);
             OpenTableCommand = new ActionCommand(OpenTableMethod);
-            tableViewModel = new TableViewModel();
+            tableViewModel = new TableViewModel(service);
         }
 
         private void SendData(string tag, object data)
@@ -110,6 +110,10 @@ namespace WpfApplication.ViewModel
                         TextBoxWriteLine(message);
                         break;
 
+                    case int integer:
+                        tableViewModel.DeleteElement(integer);
+                        break;
+
                     case TableViewData tvm:
                         tableViewModel.SetData(tvm);
                         break;
@@ -157,7 +161,7 @@ namespace WpfApplication.ViewModel
 
         private void SendMessageMethod(object parameter)
         {
-            const string diceCommand = @"^(?<quantity>\d+)\s*d\s*(?<sides>\d+)\s*(?<modifier>\+\d*)?";
+            const string diceCommand = @"^(?<quantity>\d+)\s*d\s*(?<sides>\d+)\s*(?<modifier>[+-]\d*)?";
             var regex = new Regex(diceCommand);
             var match = regex.Match(MessageInput);
             var messageText = match.Success ? RollDiceAndConvertToString(match) : MessageInput;
