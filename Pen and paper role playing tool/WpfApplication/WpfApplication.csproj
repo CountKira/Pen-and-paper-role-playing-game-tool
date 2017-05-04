@@ -94,6 +94,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TableElement.cs" />
     <Compile Include="ViewModel\IClientServerViewModel.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="PictureHelper.cs" />
     <Compile Include="TableElementData.cs" />
@@ -179,10 +180,6 @@
     <ProjectReference Include="..\MVVM Framework\MVVM Framework.csproj">
       <Project>{dbae9955-4cb4-437e-afb4-b361c1aa27cf}</Project>
       <Name>MVVM Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Pen and paper role playing tool\Pen and paper role playing tool.csproj">
-      <Project>{5878552c-4102-4d26-b946-414b9a89b999}</Project>
-      <Name>Pen and paper role playing tool</Name>
     </ProjectReference>
     <ProjectReference Include="..\TCP Framework\TCP Framework.csproj">
       <Project>{a3d67555-6d85-4220-b448-6ba9d09a8ea6}</Project>

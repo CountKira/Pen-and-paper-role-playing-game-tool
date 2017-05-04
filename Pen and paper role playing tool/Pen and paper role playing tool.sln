@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26206.0
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pen and paper role playing tool", "Pen and paper role playing tool\Pen and paper role playing tool.csproj", "{5878552C-4102-4D26-B946-414B9A89B999}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication", "WpfApplication\WpfApplication.csproj", "{EE1E524D-25E4-4023-9185-7B053CD4F5B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM Framework", "MVVM Framework\MVVM Framework.csproj", "{DBAE9955-4CB4-437E-AFB4-B361C1AA27CF}"
@@ -25,18 +23,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5878552C-4102-4D26-B946-414B9A89B999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Debug|x64.Build.0 = Debug|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Debug|x86.Build.0 = Debug|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Release|x64.ActiveCfg = Release|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Release|x64.Build.0 = Release|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Release|x86.ActiveCfg = Release|Any CPU
-		{5878552C-4102-4D26-B946-414B9A89B999}.Release|x86.Build.0 = Release|Any CPU
 		{EE1E524D-25E4-4023-9185-7B053CD4F5B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE1E524D-25E4-4023-9185-7B053CD4F5B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE1E524D-25E4-4023-9185-7B053CD4F5B8}.Debug|x64.ActiveCfg = Debug|Any CPU

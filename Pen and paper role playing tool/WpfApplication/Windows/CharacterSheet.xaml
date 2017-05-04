@@ -23,7 +23,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Label Content="{Binding Header}" />
-                            <TextBox Text="{Binding Content}" Grid.Column="1" />
+                            <TextBox Text="{Binding Content}" Grid.Column="1" TextWrapping="{Binding TextWrapping}" AcceptsReturn="{Binding IsTextWrapping}" />
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
