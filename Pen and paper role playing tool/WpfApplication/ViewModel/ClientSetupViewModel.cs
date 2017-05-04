@@ -41,10 +41,6 @@ namespace WpfApplication.ViewModel
         {
             ConnectClick = new ActionCommand(Connect_Click2);
             CancelClick = new ActionCommand(p => CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false)));
-#if DEBUG
-            ChatName = "Bill";
-            IpAddressbox = "127.0.0.1";
-#endif
         }
 
         private void Connect_Click2(object sender)

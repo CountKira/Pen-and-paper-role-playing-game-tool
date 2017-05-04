@@ -106,7 +106,7 @@ namespace WpfApplication.ViewModel
                         break;
 
                     case IOException _:
-                        var message = tag == "Client" ? Connection_to_client_lost : Connection_to_server_lost;
+                        var message = tag == "Client" ? Connection_to_server_lost : Connection_to_client_lost;
                         TextBoxWriteLine(message);
                         break;
 

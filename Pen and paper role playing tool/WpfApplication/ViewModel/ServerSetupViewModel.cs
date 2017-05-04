@@ -37,9 +37,6 @@ namespace WpfApplication.ViewModel
             foreach (var address in addresses)
                 stringBuilder.Append(address).Append(Environment.NewLine);
             ipAddresses = stringBuilder.ToString();
-#if DEBUG
-            ChatName = "Sarah";
-#endif
         }
 
         private void CreateNewServers(object sender)
